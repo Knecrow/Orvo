@@ -22,9 +22,8 @@ class AppTabBar extends StatelessWidget {
 
   static const _tabs = [
     (icon: AppIcons.calendar, label: 'Home'),
-    (icon: AppIcons.layers, label: 'Templates'),
+    (icon: AppIcons.layers, label: 'Routines'),
     (icon: AppIcons.trendingUp, label: 'Progress'),
-    (icon: AppIcons.activity, label: 'Body'),
     (icon: AppIcons.user, label: 'Profile'),
   ];
 

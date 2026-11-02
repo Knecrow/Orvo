@@ -6,7 +6,6 @@ import '../../core/models/workout.dart';
 import '../../core/theme/theme_provider.dart';
 import '../components/app_snackbar.dart';
 import '../components/app_tab_bar.dart';
-import '../screens/body/body_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/progress/progress_screen.dart';
@@ -34,6 +33,7 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int _currentTab = 0;
+  int _progressSubTab = 0;
 
   void _openLogWorkout({
     Workout? workoutToEdit,
@@ -146,6 +146,8 @@ class _MainShellState extends State<MainShell> {
                 onOpenWorkoutDetail: _openWorkoutDetail,
                 onSeeAllWorkouts: _openWorkoutHistory,
                 onNavigateToTemplates: () => setState(() => _currentTab = 1),
+                onOpenBodyProgress: () =>
+                    setState(() { _currentTab = 2; _progressSubTab = 1; }),
               ),
               TemplatesScreen(
                 store: store,
@@ -154,8 +156,8 @@ class _MainShellState extends State<MainShell> {
               ProgressScreen(
                 store: store,
                 onStartWorkout: () => _openLogWorkout(),
+                initialSubTab: _progressSubTab,
               ),
-              BodyScreen(store: store),
               ProfileScreen(
                 store: store,
                 onOpenSettings: _openSettings,

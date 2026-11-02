@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
   final ValueChanged<Workout> onOpenWorkoutDetail;
   final VoidCallback onSeeAllWorkouts;
   final VoidCallback onNavigateToTemplates;
+  final VoidCallback? onOpenBodyProgress;
 
   const HomeScreen({
     super.key,
@@ -29,6 +30,7 @@ class HomeScreen extends StatelessWidget {
     required this.onOpenWorkoutDetail,
     required this.onSeeAllWorkouts,
     required this.onNavigateToTemplates,
+    this.onOpenBodyProgress,
   });
 
   @override
@@ -144,7 +146,7 @@ class HomeScreen extends StatelessWidget {
               weightStr: weightStr,
               unitLabel: unitLabel,
               onStreakTap: onSeeAllWorkouts,
-              onWeightTap: () {},
+              onWeightTap: onOpenBodyProgress ?? () {},
             ),
             const SizedBox(height: 16),
             // Hero black chart card
