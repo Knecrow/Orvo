@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'core/data/app_store.dart';
 import 'core/models/profile.dart';
 import 'core/theme/colors.dart';
@@ -25,7 +26,7 @@ class _OrvoAppState extends State<OrvoApp> {
   AccentColor? _previewAccent;
   bool? _previewHighContrast;
   bool? _previewIsDark;
-  int _onboardingStep = 0; // 0 = welcome, 1 = setup
+  int _onboardingStep = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +40,13 @@ class _OrvoAppState extends State<OrvoApp> {
           );
         }
 
-        // Default to the warm stone / oatmeal design aesthetic matching the reference UI
         final isDark = _previewIsDark ?? false;
         final profile = _store.profile;
 
-        final activeAccent = _previewAccent ?? profile?.accent ?? AccentColor.orange;
-        final activeHighContrast = _previewHighContrast ?? profile?.highContrast ?? false;
+        final activeAccent =
+            _previewAccent ?? profile?.accent ?? AccentColor.orange;
+        final activeHighContrast =
+            _previewHighContrast ?? profile?.highContrast ?? false;
 
         final resolvedColors = AppColors.resolve(
           isDark: isDark,
@@ -55,10 +57,12 @@ class _OrvoAppState extends State<OrvoApp> {
         SystemChrome.setSystemUIOverlayStyle(
           SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
-            statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+            statusBarIconBrightness:
+                isDark ? Brightness.light : Brightness.dark,
             statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
             systemNavigationBarColor: resolvedColors.background,
-            systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+            systemNavigationBarIconBrightness:
+                isDark ? Brightness.light : Brightness.dark,
           ),
         );
 
@@ -81,7 +85,8 @@ class _OrvoAppState extends State<OrvoApp> {
             key: const ValueKey('MainShell'),
             store: _store,
             onAccentChange: (acc) => setState(() => _previewAccent = acc),
-            onHighContrastChange: (hc) => setState(() => _previewHighContrast = hc),
+            onHighContrastChange: (hc) =>
+                setState(() => _previewHighContrast = hc),
           );
         }
 
@@ -94,12 +99,50 @@ class _OrvoAppState extends State<OrvoApp> {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               scaffoldBackgroundColor: resolvedColors.background,
+              textTheme: GoogleFonts.interTextTheme(),
               colorScheme: ColorScheme.fromSeed(
                 seedColor: resolvedColors.accent,
                 brightness: isDark ? Brightness.dark : Brightness.light,
                 surface: resolvedColors.surface,
               ),
             ),
+            builder: (context, child) {
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final isWide = constraints.maxWidth > 460;
+                  final content = ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 440),
+                    child: Container(
+                      decoration: isWide
+                          ? const BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0x18000000),
+                                  blurRadius: 32,
+                                  spreadRadius: 4,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            )
+                          : null,
+                      child: ClipRect(
+                        child: child ?? const SizedBox.shrink(),
+                      ),
+                    ),
+                  );
+
+                  if (!isWide) {
+                    return child ?? const SizedBox.shrink();
+                  }
+
+                  return Container(
+                    color: const Color(0xFFDCDAD4),
+                    alignment: Alignment.center,
+                    child: content,
+                  );
+                },
+              );
+            },
             home: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               switchInCurve: Curves.easeIn,

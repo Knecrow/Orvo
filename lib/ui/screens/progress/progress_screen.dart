@@ -161,8 +161,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
-                    Text('HISTORY', style: typography.label.copyWith(color: colors.textSecondary)),
-                    const SizedBox(height: AppSpacing.sm),
+                    Text(
+                      'History',
+                      style: typography.body.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: colors.textSecondary,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     ...historyEntries.reversed.map((entry) {
                       final d = entry['date'] as DateTime;
                       final wVal = entry['weight'] as double;
@@ -198,14 +206,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                       color: colors.textPrimary,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    'Top set logged',
-                                    style: typography.secondary.copyWith(
-                                      color: colors.textSecondary,
-                                      fontSize: 12,
                                     ),
                                   ),
                                 ],

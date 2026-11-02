@@ -153,10 +153,15 @@ class _BodyScreenState extends State<BodyScreen> {
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   Text(
-                    'HISTORY',
-                    style: typography.label.copyWith(color: colors.textSecondary),
+                    'History',
+                    style: typography.body.copyWith(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: colors.textSecondary,
+                      letterSpacing: 0.5,
+                    ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
+                  const SizedBox(height: 8),
                   ...entries.map((entry) {
                     final date = DateTime.tryParse(entry.date) ?? DateTime.now();
                     final formattedDate = formatDate(date);
@@ -195,14 +200,6 @@ class _BodyScreenState extends State<BodyScreen> {
                                       color: colors.textPrimary,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 15,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    'Weight entry',
-                                    style: typography.secondary.copyWith(
-                                      color: colors.textSecondary,
-                                      fontSize: 12,
                                     ),
                                   ),
                                 ],
