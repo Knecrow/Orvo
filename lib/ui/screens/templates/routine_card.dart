@@ -3,7 +3,6 @@ import '../../../core/models/template.dart';
 import '../../../core/platform/app_haptics.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
-import 'dot_matrix_text.dart';
 
 class RoutineCard extends StatelessWidget {
   final Template template;
@@ -66,10 +65,14 @@ class RoutineCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    DotMatrixText(
-                      text: template.name.toUpperCase(),
-                      dotSize: 2.2,
-                      spacing: 3.8,
+                    Text(
+                      template.name.toUpperCase(),
+                      style: typography.title.copyWith(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.8,
+                        color: colors.textPrimary,
+                      ),
                     ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
