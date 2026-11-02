@@ -121,83 +121,83 @@ class _ExercisePickerModalState extends State<ExercisePickerModal> {
           ),
         ),
         const SizedBox(height: AppSpacing.md),
-        Expanded(
-          child: ListView.separated(
-            itemCount: filtered.length,
-            separatorBuilder: (context, index) => Container(
-              height: AppLayout.hairlineWidth,
-              color: colors.border,
-            ),
-            itemBuilder: (context, index) {
-              final ex = filtered[index];
-              final isAdded = _addedNames.contains(ex.name);
-
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            ex.name,
-                            style: typography.body.copyWith(
-                              color: colors.textPrimary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            '${ex.category} · ${ex.defaultTarget} · ${ex.defaultLoad}',
-                            style: typography.secondary.copyWith(
-                              color: colors.textSecondary,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        AppHaptics.light();
-                        setState(() => _addedNames.add(ex.name));
-                        widget.onSelectExercise(TemplateExercise(
-                          name: ex.name,
-                          target: ex.defaultTarget,
-                          load: ex.defaultLoad,
-                        ));
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isAdded
-                              ? colors.surfaceMuted
-                              : const Color(0xFF141414),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          isAdded ? 'Added ✓' : '+ Add',
-                          style: typography.label.copyWith(
-                            color: isAdded
-                                ? colors.textSecondary
-                                : Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+        ListView.separated(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: filtered.length,
+          separatorBuilder: (context, index) => Container(
+            height: AppLayout.hairlineWidth,
+            color: colors.border,
           ),
+          itemBuilder: (context, index) {
+            final ex = filtered[index];
+            final isAdded = _addedNames.contains(ex.name);
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          ex.name,
+                          style: typography.body.copyWith(
+                            color: colors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${ex.category} · ${ex.defaultTarget} · ${ex.defaultLoad}',
+                          style: typography.secondary.copyWith(
+                            color: colors.textSecondary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      AppHaptics.light();
+                      setState(() => _addedNames.add(ex.name));
+                      widget.onSelectExercise(TemplateExercise(
+                        name: ex.name,
+                        target: ex.defaultTarget,
+                        load: ex.defaultLoad,
+                      ));
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isAdded
+                            ? colors.surfaceMuted
+                            : const Color(0xFF141414),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        isAdded ? 'Added ✓' : '+ Add',
+                        style: typography.label.copyWith(
+                          color: isAdded
+                              ? colors.textSecondary
+                              : Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );

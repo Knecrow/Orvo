@@ -6,11 +6,17 @@ Future<T?> showAppBottomSheet<T>({
   required BuildContext context,
   required Widget child,
   double initialChildSize = 0.65,
-  double maxChildSize = 0.9,
-  double minChildSize = 0.4,
+  double? maxChildSize,
+  double? minChildSize,
 }) {
   final theme = AppTheme.of(context);
   final colors = theme.colors;
+
+  final resolvedInitial = initialChildSize.clamp(0.1, 1.0);
+  final resolvedMin = (minChildSize ?? (resolvedInitial * 0.75))
+      .clamp(0.1, resolvedInitial);
+  final resolvedMax = (maxChildSize ?? (resolvedInitial < 0.85 ? 0.95 : 0.98))
+      .clamp(resolvedInitial, 1.0);
 
   return showModalBottomSheet<T>(
     context: context,
@@ -23,9 +29,9 @@ Future<T?> showAppBottomSheet<T>({
         accent: theme.accent,
         highContrast: theme.highContrast,
         child: DraggableScrollableSheet(
-          initialChildSize: initialChildSize,
-          maxChildSize: maxChildSize,
-          minChildSize: minChildSize,
+          initialChildSize: resolvedInitial,
+          maxChildSize: resolvedMax,
+          minChildSize: resolvedMin,
           expand: false,
           builder: (context, scrollController) {
             return Container(
@@ -73,4 +79,3 @@ Future<T?> showAppBottomSheet<T>({
     },
   );
 }
-
