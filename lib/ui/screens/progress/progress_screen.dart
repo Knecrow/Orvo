@@ -6,6 +6,7 @@ import '../../../core/theme/theme_provider.dart';
 import '../../components/screen_header.dart';
 import 'body_progress_view.dart';
 import 'exercise_progress_view.dart';
+import 'overview_dashboard_view.dart';
 
 class ProgressScreen extends StatefulWidget {
   final AppStore store;
@@ -27,6 +28,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
   final _scrollController = ScrollController();
   double _scrollOffset = 0.0;
   late int _activeSubTab;
+
+  static const _subTabs = ['Overview', 'Strength', 'Body Weight'];
 
   @override
   void initState() {
@@ -76,72 +79,42 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
-                  children: [
-                    Expanded(
+                  children: List.generate(_subTabs.length, (idx) {
+                    final isSel = _activeSubTab == idx;
+                    return Expanded(
                       child: GestureDetector(
                         onTap: () {
                           AppHaptics.light();
-                          setState(() => _activeSubTab = 0);
+                          setState(() => _activeSubTab = idx);
                         },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 150),
                           decoration: BoxDecoration(
-                            color: _activeSubTab == 0
+                            color: isSel
                                 ? const Color(0xFF141414)
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(9),
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            'Strength',
+                            _subTabs[idx],
                             style: typography.body.copyWith(
-                              fontSize: 13,
-                              fontWeight: _activeSubTab == 0
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: _activeSubTab == 0
+                              fontSize: 12.5,
+                              fontWeight:
+                                  isSel ? FontWeight.w700 : FontWeight.w500,
+                              color: isSel
                                   ? Colors.white
                                   : colors.textSecondary,
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          AppHaptics.light();
-                          setState(() => _activeSubTab = 1);
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
-                          decoration: BoxDecoration(
-                            color: _activeSubTab == 1
-                                ? const Color(0xFF141414)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(9),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Body Weight',
-                            style: typography.body.copyWith(
-                              fontSize: 13,
-                              fontWeight: _activeSubTab == 1
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: _activeSubTab == 1
-                                  ? Colors.white
-                                  : colors.textSecondary,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                  }),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 14),
             Expanded(
               child: ListView(
                 controller: _scrollController,
@@ -153,6 +126,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 ),
                 children: [
                   if (_activeSubTab == 0)
+                    OverviewDashboardView(
+                      store: widget.store,
+                      onStartWorkout: widget.onStartWorkout,
+                    )
+                  else if (_activeSubTab == 1)
                     ExerciseProgressView(
                       store: widget.store,
                       onStartWorkout: widget.onStartWorkout,
