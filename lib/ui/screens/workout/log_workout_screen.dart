@@ -4,6 +4,7 @@ import '../../../core/logic/autocomplete_engine.dart';
 import '../../../core/logic/id_generator.dart';
 import '../../../core/logic/unit_converter.dart';
 import '../../../core/models/profile.dart';
+import '../../../core/models/template.dart';
 import '../../../core/models/workout.dart';
 import '../../../core/platform/app_haptics.dart';
 import '../../../core/theme/spacing.dart';
@@ -19,12 +20,14 @@ class LogWorkoutScreen extends StatefulWidget {
   final AppStore store;
   final Workout? workoutToEdit;
   final List<String>? templateExerciseNames;
+  final Template? template;
 
   const LogWorkoutScreen({
     super.key,
     required this.store,
     this.workoutToEdit,
     this.templateExerciseNames,
+    this.template,
   });
 
   @override
@@ -49,6 +52,31 @@ class _LogWorkoutScreenState extends State<LogWorkoutScreen> {
             reps: s.reps > 0 ? s.reps.toString() : '',
           )).toList(),
         ));
+      }
+    } else if (widget.template != null && widget.template!.items.isNotEmpty) {
+      for (final item in widget.template!.items) {
+        int setCount = 1;
+        String reps = '';
+        final xMatch = RegExp(r'(\d+)\s*x\s*(\d+)').firstMatch(item.target);
+        if (xMatch != null) {
+          setCount = int.tryParse(xMatch.group(1) ?? '1') ?? 1;
+          reps = xMatch.group(2) ?? '';
+        } else {
+          final digits = RegExp(r'\d+').firstMatch(item.target);
+          if (digits != null) reps = digits.group(0) ?? '';
+        }
+
+        String weight = '';
+        final wDigits = RegExp(r'(\d+(?:\.\d+)?)').firstMatch(item.load);
+        if (wDigits != null) {
+          weight = wDigits.group(1) ?? '';
+        }
+
+        final sets = List.generate(
+          setCount.clamp(1, 10),
+          (_) => DraftSet(weight: weight, reps: reps),
+        );
+        _exercises.add(DraftEx(name: item.name, sets: sets));
       }
     } else if (widget.templateExerciseNames != null && widget.templateExerciseNames!.isNotEmpty) {
       for (final name in widget.templateExerciseNames!) {

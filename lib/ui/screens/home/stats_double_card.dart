@@ -44,25 +44,16 @@ class StatsDoubleCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    label,
-                    style: typography.secondary.copyWith(
-                      color: colors.textSecondary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    size: 16,
-                    color: colors.textSecondary,
-                  ),
-                ],
+              Text(
+                label,
+                style: typography.secondary.copyWith(
+                  color: colors.textSecondary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.4,
+                ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 8),
               Text(
                 value,
                 style: typography.title.merge(typography.tabularNums).copyWith(

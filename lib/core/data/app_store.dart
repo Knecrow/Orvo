@@ -5,6 +5,7 @@ import '../models/template.dart';
 import '../models/workout.dart';
 import '../models/body_entry.dart';
 import '../platform/app_haptics.dart';
+import 'default_templates.dart';
 import 'local_storage.dart';
 
 class SnackbarInfo {
@@ -44,7 +45,8 @@ class AppStore extends ChangeNotifier {
     slowTimer.cancel();
 
     _profile = data['profile'] as Profile?;
-    _templates = (data['templates'] as List<Template>?) ?? [];
+    final loadedTemplates = (data['templates'] as List<Template>?) ?? [];
+    _templates = loadedTemplates.isNotEmpty ? loadedTemplates : List.of(defaultTemplates);
     _workouts = (data['workouts'] as List<Workout>?) ?? [];
     _bodyEntries = (data['bodyEntries'] as List<BodyEntry>?) ?? [];
     _isHydrated = true;

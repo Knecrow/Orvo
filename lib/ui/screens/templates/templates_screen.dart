@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/logic/autocomplete_engine.dart';
 import '../../../core/models/template.dart';
-import '../../../core/platform/app_haptics.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../components/app_bottom_sheet.dart';
 import '../../components/app_button.dart';
 import '../../components/empty_state.dart';
 import '../../components/screen_header.dart';
-import '../../components/swipeable_row.dart';
 import 'new_template_sheet.dart';
+import 'routine_card.dart';
+import 'week_split_bar.dart';
 
 class TemplatesScreen extends StatefulWidget {
   final AppStore store;
@@ -29,6 +29,7 @@ class TemplatesScreen extends StatefulWidget {
 class _TemplatesScreenState extends State<TemplatesScreen> {
   final _scrollController = ScrollController();
   double _scrollOffset = 0.0;
+  String? _selectedDay;
 
   @override
   void initState() {
@@ -45,10 +46,13 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
   }
 
   void _openNewTemplateSheet([Template? template]) {
-    final allNames = extractExerciseNames(widget.store.workouts, widget.store.templates);
+    final allNames = extractExerciseNames(
+      widget.store.workouts,
+      widget.store.templates,
+    );
     showAppBottomSheet(
       context: context,
-      initialChildSize: 0.8,
+      initialChildSize: 0.85,
       child: NewTemplateSheet(
         allExerciseNames: allNames,
         initialTemplate: template,
@@ -63,53 +67,15 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
     );
   }
 
-  void _showActionSheet(Template template) {
-    final theme = AppTheme.of(context);
-    final colors = theme.colors;
-    final typography = theme.typography;
-
-    showAppBottomSheet(
-      context: context,
-      initialChildSize: 0.35,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(template.name, style: typography.title.copyWith(color: colors.textPrimary)),
-          const SizedBox(height: AppSpacing.md),
-          InkWell(
-            onTap: () {
-              Navigator.pop(context);
-              _openNewTemplateSheet(template);
-            },
-            child: Container(
-              height: AppLayout.minTouchTarget,
-              alignment: Alignment.centerLeft,
-              child: Text('Edit Template', style: typography.body.copyWith(color: colors.textPrimary)),
-            ),
-          ),
-          Container(height: AppLayout.hairlineWidth, color: colors.border),
-          InkWell(
-            onTap: () {
-              Navigator.pop(context);
-              widget.store.deleteTemplate(template.id);
-            },
-            child: Container(
-              height: AppLayout.minTouchTarget,
-              alignment: Alignment.centerLeft,
-              child: Text('Delete Template', style: typography.body.copyWith(color: colors.danger)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
     final colors = theme.colors;
-    final typography = theme.typography;
-    final templates = widget.store.templates;
+    final allTemplates = widget.store.templates;
+
+    final templates = _selectedDay == null
+        ? allTemplates
+        : allTemplates.where((t) => t.days.contains(_selectedDay)).toList();
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -119,14 +85,30 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
           children: [
             Column(
               children: [
-                ScreenHeader(title: 'Templates', scrollOffset: _scrollOffset),
+                ScreenHeader(title: 'Routines', scrollOffset: _scrollOffset),
+                // 7-day circular split bar matching reference
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppLayout.screenHorizontalPadding,
+                  ),
+                  child: WeekSplitBar(
+                    templates: allTemplates,
+                    selectedDay: _selectedDay,
+                    onSelectDay: (day) => setState(() => _selectedDay = day),
+                  ),
+                ),
+                const SizedBox(height: 12),
                 Expanded(
                   child: templates.isEmpty
                       ? Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: AppLayout.screenHorizontalPadding),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppLayout.screenHorizontalPadding,
+                          ),
                           child: EmptyState(
-                            message: 'No templates.',
-                            actionLabel: 'New Template',
+                            message: _selectedDay != null
+                                ? 'No routine on $_selectedDay.'
+                                : 'No routines yet.',
+                            actionLabel: 'New Routine',
                             onAction: () => _openNewTemplateSheet(),
                           ),
                         )
@@ -134,81 +116,20 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
                           controller: _scrollController,
                           padding: const EdgeInsets.fromLTRB(
                             AppLayout.screenHorizontalPadding,
-                            0,
+                            4,
                             AppLayout.screenHorizontalPadding,
                             140,
                           ),
                           itemCount: templates.length,
                           itemBuilder: (context, index) {
                             final item = templates[index];
-                            final exSummary = item.exercises.join(', ');
-
-                            return SwipeableRow(
-                              itemKey: ValueKey(item.id),
-                              onDelete: () => widget.store.deleteTemplate(item.id),
-                              child: InkWell(
-                                onTap: () {
-                                  AppHaptics.medium();
-                                  widget.onStartWorkoutFromTemplate(item);
-                                },
-                                onLongPress: () => _showActionSheet(item),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 44,
-                                        height: 44,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF141414),
-                                          borderRadius: BorderRadius.circular(13),
-                                        ),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.layers_rounded,
-                                            size: 20,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 14),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              item.name,
-                                              style: typography.body.copyWith(
-                                                color: colors.textPrimary,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Text(
-                                              exSummary,
-                                              style: typography.secondary.copyWith(
-                                                color: colors.textSecondary,
-                                                fontSize: 12,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Text(
-                                        '${item.exercises.length} ex',
-                                        style: typography.body.merge(typography.tabularNums).copyWith(
-                                          color: colors.textPrimary,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                            return RoutineCard(
+                              template: item,
+                              onStart: () =>
+                                  widget.onStartWorkoutFromTemplate(item),
+                              onEdit: () => _openNewTemplateSheet(item),
+                              onDelete: () =>
+                                  widget.store.deleteTemplate(item.id),
                             );
                           },
                         ),
@@ -220,7 +141,7 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
               right: AppLayout.screenHorizontalPadding,
               bottom: MediaQuery.of(context).padding.bottom + 85,
               child: AppButton(
-                label: 'New Template',
+                label: 'New Routine',
                 onPress: () => _openNewTemplateSheet(),
               ),
             ),

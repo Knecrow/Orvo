@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/data/app_store.dart';
-import '../../../core/logic/formatters.dart';
 import '../../../core/logic/streak_engine.dart';
 import '../../../core/logic/unit_converter.dart';
 import '../../../core/models/profile.dart';
@@ -51,7 +50,9 @@ class HomeScreen extends StatelessWidget {
     final unitLabel = unit == WeightUnit.kg ? 'kg' : 'lb';
 
     final recent = workouts.take(4).toList();
-    final firstName = profile?.name.isNotEmpty == true ? profile!.name.split(' ').first : 'Athlete';
+    final firstName = profile?.name.isNotEmpty == true
+        ? profile!.name.split(' ').first
+        : 'Athlete';
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -65,31 +66,17 @@ class HomeScreen extends StatelessWidget {
             110,
           ),
           children: [
-            // Top Row: "Welcome, John!" + Notification bell with red dot
+            // Top row: name + bell
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Text(
-                      'Welcome, ',
-                      style: typography.title.copyWith(
-                        color: colors.textSecondary,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 20,
-                      ),
-                    ),
-                    Text(
-                      '$firstName!',
-                      style: typography.title.copyWith(
-                        color: colors.textPrimary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
+                Text(
+                  firstName,
+                  style: typography.title.copyWith(
+                    color: colors.textPrimary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 22,
+                  ),
                 ),
                 Stack(
                   children: [
@@ -119,42 +106,39 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 18),
-            // Hero Large Stat (matches "$ 13,553.00 Balance" in screenshot)
+            const SizedBox(height: 20),
+            // Hero stat: large workout count
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
                 Text(
                   '$thisWeekCount',
-                  style: typography.largeTitle.merge(typography.tabularNums).copyWith(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w800,
-                    color: colors.textPrimary,
-                    height: 1.0,
-                  ),
+                  style: typography.largeTitle
+                      .merge(typography.tabularNums)
+                      .copyWith(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w800,
+                        color: colors.textPrimary,
+                        height: 1.0,
+                      ),
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  formatWorkouts(thisWeekCount),
-                  style: typography.title.copyWith(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textPrimary,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'this week',
-                  style: typography.secondary.copyWith(
-                    color: colors.textSecondary,
-                    fontSize: 14,
+                const SizedBox(width: 10),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text(
+                    thisWeekCount == 1 ? 'workout' : 'workouts',
+                    style: typography.secondary.copyWith(
+                      color: colors.textSecondary,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 18),
-            // Two Muted Grey Cards (Positions & Cash style from screenshot)
+            const SizedBox(height: 20),
+            // Two muted grey stat cards
             StatsDoubleCard(
               streak: streak,
               weightStr: weightStr,
@@ -163,49 +147,40 @@ class HomeScreen extends StatelessWidget {
               onWeightTap: () {},
             ),
             const SizedBox(height: 16),
-            // Hero Black Chart Card (matches Phone 1 chart card)
+            // Hero black chart card
             HeroChartCard(
               workouts: workouts,
               onStartWorkout: onStartWorkout,
             ),
-            const SizedBox(height: 24),
-            // Section Header: "Workouts history" + "Recent ▾"
+            const SizedBox(height: 32),
+            // Section divider
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Workouts history',
-                  style: typography.title.copyWith(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: colors.textPrimary,
+                  'History',
+                  style: typography.body.copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textSecondary,
+                    letterSpacing: 0.5,
                   ),
                 ),
                 GestureDetector(
                   onTap: onSeeAllWorkouts,
                   behavior: HitTestBehavior.opaque,
-                  child: Row(
-                    children: [
-                      Text(
-                        'Recent',
-                        style: typography.secondary.copyWith(
-                          color: colors.textSecondary,
-                          fontSize: 13,
-                        ),
-                      ),
-                      const SizedBox(width: 2),
-                      Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        size: 16,
-                        color: colors.textSecondary,
-                      ),
-                    ],
+                  child: Text(
+                    'See all',
+                    style: typography.secondary.copyWith(
+                      color: colors.accent,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            // Transactions / Workouts History List
+            const SizedBox(height: 8),
             if (workouts.isEmpty)
               EmptyState(
                 message: 'No workouts logged yet.',

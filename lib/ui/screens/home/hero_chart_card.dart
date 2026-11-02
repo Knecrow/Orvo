@@ -78,7 +78,7 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
     final points = _generatePoints();
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
+      padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
       decoration: BoxDecoration(
         color: const Color(0xFF141414),
         borderRadius: BorderRadius.circular(24),
@@ -93,37 +93,27 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Volume Load',
-                style: typography.secondary.copyWith(
-                  color: const Color(0xFF8E8D88),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: colors.accent,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                '${points.last.toInt()} kg',
+                style: typography.label.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 11,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: colors.accent,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  '${points.last.toInt()} kg',
-                  style: typography.label.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 10,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           SizedBox(
-            height: 100,
+            height: 120,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
@@ -137,7 +127,7 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
                     animation: _drawIn,
                     builder: (context, _) {
                       return CustomPaint(
-                        size: Size(constraints.maxWidth, 100),
+                        size: Size(constraints.maxWidth, 120),
                         painter: HeroCurvePainter(
                           points: points,
                           progress: _drawIn.value,

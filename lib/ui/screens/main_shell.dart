@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/data/app_store.dart';
 import '../../core/models/profile.dart';
+import '../../core/models/template.dart';
 import '../../core/models/workout.dart';
 import '../../core/theme/theme_provider.dart';
 import '../components/app_snackbar.dart';
@@ -34,7 +35,11 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _currentTab = 0;
 
-  void _openLogWorkout({Workout? workoutToEdit, List<String>? templateExerciseNames}) {
+  void _openLogWorkout({
+    Workout? workoutToEdit,
+    List<String>? templateExerciseNames,
+    Template? template,
+  }) {
     Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (context, anim, _) {
@@ -47,6 +52,7 @@ class _MainShellState extends State<MainShell> {
               store: widget.store,
               workoutToEdit: workoutToEdit,
               templateExerciseNames: templateExerciseNames,
+              template: template,
             ),
           );
         },
@@ -136,14 +142,14 @@ class _MainShellState extends State<MainShell> {
               HomeScreen(
                 store: store,
                 onStartWorkout: () => _openLogWorkout(),
-                onStartFromTemplate: (t) => _openLogWorkout(templateExerciseNames: t.exercises),
+                onStartFromTemplate: (t) => _openLogWorkout(template: t),
                 onOpenWorkoutDetail: _openWorkoutDetail,
                 onSeeAllWorkouts: _openWorkoutHistory,
                 onNavigateToTemplates: () => setState(() => _currentTab = 1),
               ),
               TemplatesScreen(
                 store: store,
-                onStartWorkoutFromTemplate: (t) => _openLogWorkout(templateExerciseNames: t.exercises),
+                onStartWorkoutFromTemplate: (t) => _openLogWorkout(template: t),
               ),
               ProgressScreen(
                 store: store,

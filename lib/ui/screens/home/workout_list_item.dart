@@ -32,7 +32,6 @@ class WorkoutListItem extends StatelessWidget {
 
     final parsedDate = DateTime.tryParse(workout.date) ?? DateTime.now();
     final dateLabel = formatDate(parsedDate);
-    final exerciseSummary = formatExercises(workout.exercises.length);
     final primaryExerciseName = workout.exercises.isNotEmpty
         ? workout.exercises.first.name
         : 'Workout Session';
@@ -84,7 +83,7 @@ class WorkoutListItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '$dateLabel · $exerciseSummary',
+                    dateLabel,
                     style: typography.secondary.copyWith(
                       color: colors.textSecondary,
                       fontSize: 12,
