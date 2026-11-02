@@ -108,3 +108,4 @@ class WeekSplitBar extends StatelessWidget {
     );
   }
 }
+

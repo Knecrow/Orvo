@@ -135,3 +135,4 @@ class ExerciseEditorRow extends StatelessWidget {
     );
   }
 }
+

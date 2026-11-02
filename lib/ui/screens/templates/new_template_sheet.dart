@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import '../../../core/data/exercise_library.dart';
 import '../../../core/logic/id_generator.dart';
 import '../../../core/models/template.dart';
 import '../../../core/platform/app_haptics.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../components/app_bottom_sheet.dart';
 import '../../components/app_button.dart';
 import '../../components/app_text_input.dart';
 import 'exercise_editor_row.dart';
+import 'exercise_picker_modal.dart';
+import 'preset_chips_row.dart';
+import 'scheduled_days_picker.dart';
 
 class NewTemplateSheet extends StatefulWidget {
   final List<String> allExerciseNames;
@@ -29,16 +34,6 @@ class _NewTemplateSheetState extends State<NewTemplateSheet> {
   final List<String> _days = [];
   final List<TemplateExercise> _exercises = [];
 
-  static const _allDays = [
-    'SAT',
-    'SUN',
-    'MON',
-    'TUE',
-    'WED',
-    'THU',
-    'FRI',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -47,12 +42,19 @@ class _NewTemplateSheetState extends State<NewTemplateSheet> {
       _days.addAll(widget.initialTemplate!.days);
       _exercises.addAll(widget.initialTemplate!.items);
     } else {
-      _exercises.add(const TemplateExercise(
-        name: 'Bench Press',
-        target: '3 x 10',
-        load: '60 kg',
-      ));
+      _applyPreset(routinePresets.first);
     }
+  }
+
+  void _applyPreset(RoutinePreset preset) {
+    AppHaptics.light();
+    setState(() {
+      _nameCtrl.text = preset.name;
+      _days.clear();
+      _days.addAll(preset.days);
+      _exercises.clear();
+      _exercises.addAll(preset.exercises);
+    });
   }
 
   @override
@@ -70,6 +72,18 @@ class _NewTemplateSheetState extends State<NewTemplateSheet> {
         _days.add(day);
       }
     });
+  }
+
+  void _openExercisePicker() {
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.85,
+      child: ExercisePickerModal(
+        onSelectExercise: (ex) {
+          setState(() => _exercises.add(ex));
+        },
+      ),
+    );
   }
 
   bool _isValid() {
@@ -105,51 +119,43 @@ class _NewTemplateSheetState extends State<NewTemplateSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            widget.initialTemplate != null ? 'Edit Routine' : 'New Routine',
-            style: typography.title.copyWith(color: colors.textPrimary),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                widget.initialTemplate != null ? 'Edit Routine' : 'New Routine',
+                style: typography.title.copyWith(color: colors.textPrimary),
+              ),
+              if (widget.initialTemplate == null)
+                Text(
+                  'Quick Presets:',
+                  style: typography.secondary.copyWith(
+                    color: colors.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+            ],
           ),
+          if (widget.initialTemplate == null) ...[
+            const SizedBox(height: 8),
+            PresetChipsRow(
+              currentName: _nameCtrl.text,
+              onSelectPreset: _applyPreset,
+            ),
+          ],
           const SizedBox(height: AppSpacing.md),
           AppTextInput(
             label: 'ROUTINE NAME',
             controller: _nameCtrl,
-            autoFocus: widget.initialTemplate == null,
             autoCorrect: false,
             textCapitalization: TextCapitalization.characters,
             placeholder: 'UPPER / LOWER / PUSH',
             onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: AppSpacing.sm),
-          Text(
-            'SCHEDULED DAYS',
-            style: typography.label.copyWith(color: colors.textSecondary),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: _allDays.map((d) {
-              final isSel = _days.contains(d);
-              return GestureDetector(
-                onTap: () => _toggleDay(d),
-                child: Container(
-                  width: 40,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: isSel ? const Color(0xFF141414) : colors.surfaceMuted,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    d,
-                    style: typography.label.copyWith(
-                      color: isSel ? Colors.white : colors.textPrimary,
-                      fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                      fontSize: 11,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
+          ScheduledDaysPicker(
+            selectedDays: _days,
+            onToggleDay: _toggleDay,
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
@@ -177,21 +183,40 @@ class _NewTemplateSheetState extends State<NewTemplateSheet> {
             final idx = entry.key;
             final ex = entry.value;
             return ExerciseEditorRow(
+              key: ValueKey('ex_${idx}_${ex.name}'),
               exercise: ex,
               onChanged: (updated) => setState(() => _exercises[idx] = updated),
               onRemove: () => setState(() => _exercises.removeAt(idx)),
             );
           }),
           const SizedBox(height: AppSpacing.sm),
-          AppButton(
-            label: '+ Add Exercise',
-            variant: ButtonVariant.secondary,
-            onPress: () {
-              AppHaptics.light();
-              setState(() {
-                _exercises.add(const TemplateExercise(name: ''));
-              });
-            },
+          Row(
+            children: [
+              Expanded(
+                child: AppButton(
+                  label: '+ From Library',
+                  variant: ButtonVariant.secondary,
+                  onPress: _openExercisePicker,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: AppButton(
+                  label: '+ Custom Row',
+                  variant: ButtonVariant.secondary,
+                  onPress: () {
+                    AppHaptics.light();
+                    setState(() {
+                      _exercises.add(const TemplateExercise(
+                        name: '',
+                        target: '3 x 10',
+                        load: 'Body',
+                      ));
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: AppSpacing.lg),
           AppButton(

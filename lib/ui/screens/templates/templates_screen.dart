@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/logic/autocomplete_engine.dart';
+import '../../../core/logic/id_generator.dart';
 import '../../../core/models/template.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
@@ -52,7 +53,7 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
     );
     showAppBottomSheet(
       context: context,
-      initialChildSize: 0.85,
+      initialChildSize: 0.88,
       child: NewTemplateSheet(
         allExerciseNames: allNames,
         initialTemplate: template,
@@ -63,6 +64,70 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
             widget.store.addTemplate(t);
           }
         },
+      ),
+    );
+  }
+
+  void _showRoutineOptions(Template template) {
+    final theme = AppTheme.of(context);
+    final colors = theme.colors;
+    final typography = theme.typography;
+
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.32,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(template.name,
+              style: typography.title.copyWith(color: colors.textPrimary)),
+          const SizedBox(height: AppSpacing.md),
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+              _openNewTemplateSheet(template);
+            },
+            child: Container(
+              height: AppLayout.minTouchTarget,
+              alignment: Alignment.centerLeft,
+              child: Text('Edit Routine',
+                  style: typography.body.copyWith(color: colors.textPrimary)),
+            ),
+          ),
+          Container(height: AppLayout.hairlineWidth, color: colors.border),
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+              final clone = Template(
+                id: generateId(),
+                name: '${template.name} B',
+                days: List.of(template.days),
+                routineExercises: List.of(template.items),
+                exercises: List.of(template.exercises),
+              );
+              widget.store.addTemplate(clone);
+            },
+            child: Container(
+              height: AppLayout.minTouchTarget,
+              alignment: Alignment.centerLeft,
+              child: Text('Duplicate Routine',
+                  style: typography.body.copyWith(color: colors.textPrimary)),
+            ),
+          ),
+          Container(height: AppLayout.hairlineWidth, color: colors.border),
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+              widget.store.deleteTemplate(template.id);
+            },
+            child: Container(
+              height: AppLayout.minTouchTarget,
+              alignment: Alignment.centerLeft,
+              child: Text('Delete Routine',
+                  style: typography.body.copyWith(color: colors.danger)),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -86,7 +151,6 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
             Column(
               children: [
                 ScreenHeader(title: 'Routines', scrollOffset: _scrollOffset),
-                // 7-day circular split bar matching reference
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppLayout.screenHorizontalPadding,
@@ -127,7 +191,7 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
                               template: item,
                               onStart: () =>
                                   widget.onStartWorkoutFromTemplate(item),
-                              onEdit: () => _openNewTemplateSheet(item),
+                              onEdit: () => _showRoutineOptions(item),
                               onDelete: () =>
                                   widget.store.deleteTemplate(item.id),
                             );

@@ -39,3 +39,4 @@ const List<Template> defaultTemplates = [
     ],
   ),
 ];
+

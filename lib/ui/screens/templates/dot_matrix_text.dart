@@ -125,3 +125,4 @@ class _DotMatrixPainter extends CustomPainter {
     return old.text != text || old.color != color || old.dotSize != dotSize;
   }
 }
+
