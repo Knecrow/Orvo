@@ -7,6 +7,7 @@ import '../../../core/models/template.dart';
 import '../../../core/models/workout.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../components/profile_avatar.dart';
 import 'hero_chart_card.dart';
 import 'stats_double_card.dart';
 import 'today_workout_card.dart';
@@ -19,6 +20,7 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback onSeeAllWorkouts;
   final VoidCallback onNavigateToTemplates;
   final VoidCallback? onOpenBodyProgress;
+  final VoidCallback? onOpenProfile;
 
   const HomeScreen({
     super.key,
@@ -29,6 +31,7 @@ class HomeScreen extends StatelessWidget {
     required this.onSeeAllWorkouts,
     required this.onNavigateToTemplates,
     this.onOpenBodyProgress,
+    this.onOpenProfile,
   });
 
   @override
@@ -65,16 +68,46 @@ class HomeScreen extends StatelessWidget {
             110,
           ),
           children: [
-            // Top row: name + notification bell
+            // Top row: profile avatar + greeting (tap to open profile) & notification bell
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  firstName,
-                  style: typography.title.copyWith(
-                    color: colors.textPrimary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 22,
+                GestureDetector(
+                  onTap: onOpenProfile,
+                  behavior: HitTestBehavior.opaque,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ProfileAvatar(
+                        name: profile?.name ?? '',
+                        size: 40,
+                        showAccentRing: true,
+                        onTap: onOpenProfile,
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hey,',
+                            style: typography.label.copyWith(
+                              color: colors.textSecondary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            firstName,
+                            style: typography.title.copyWith(
+                              color: colors.textPrimary,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                              height: 1.1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
                 Stack(

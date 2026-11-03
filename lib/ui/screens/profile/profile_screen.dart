@@ -9,14 +9,14 @@ import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../components/app_bottom_sheet.dart';
 import '../../components/app_icons.dart';
-import '../../components/app_scroll_picker_field.dart';
-import '../../components/app_text_input.dart';
 import '../../components/days_per_week_scroll_picker.dart';
 import '../../components/height_scroll_picker.dart';
 import '../../components/screen_header.dart';
-import '../../components/segmented_control.dart';
 import '../../components/weight_scroll_picker.dart';
 import 'bmi_card.dart';
+import 'profile_hero.dart';
+import 'profile_metrics_card.dart';
+import 'profile_save_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   final AppStore store;
@@ -103,12 +103,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: HeightScrollPicker(
         initialHeightCm: _heightCm,
         initialUseFeet: _useFeet,
-        onSelect: (val, useFeet) {
-          setState(() {
-            _heightCm = val;
-            _useFeet = useFeet;
-          });
-        },
+        onSelect: (val, useFeet) => setState(() {
+          _heightCm = val;
+          _useFeet = useFeet;
+        }),
       ),
     );
   }
@@ -139,10 +137,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _handleUnitChange(WeightUnit u) {
     if (u == _unit) return;
     final currentKg = inputToKg(_weightVal, _unit);
-    final converted = kgToUnit(currentKg, u);
     setState(() {
       _unit = u;
-      _weightVal = converted;
+      _weightVal = kgToUnit(currentKg, u);
       _useFeet = u == WeightUnit.lb;
     });
   }
@@ -156,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final hasChanges = _hasChanges();
     final weightDisplay = '${formatWeightValue(_weightVal, _unit)} ${_unit.name}';
     final heightDisplay = formatHeight(_heightCm, useFeet: _useFeet);
-    final daysDisplay = '$_weeklyGoal ${_weeklyGoal == 1 ? 'day' : 'days'} / week';
+    final daysDisplay = '$_weeklyGoal ${_weeklyGoal == 1 ? 'day' : 'days'} / wk';
 
     final rightWidget = Row(
       mainAxisSize: MainAxisSize.min,
@@ -167,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             behavior: HitTestBehavior.opaque,
             child: Text(
               'Save',
-              style: typography.body.copyWith(color: colors.accentText, fontWeight: FontWeight.w600),
+              style: typography.body.copyWith(color: colors.accentText, fontWeight: FontWeight.w700),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -189,36 +186,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: colors.background,
       body: SafeArea(
         bottom: false,
-        child: Column(
+        child: Stack(
           children: [
-            ScreenHeader(title: 'Profile', scrollOffset: _scrollOffset, rightWidget: rightWidget),
-            Expanded(
-              child: ListView(
-                controller: _scrollController,
-                padding: const EdgeInsets.fromLTRB(AppLayout.screenHorizontalPadding, 0, AppLayout.screenHorizontalPadding, 100),
-                children: [
-                  AppTextInput(label: 'NAME', controller: _nameCtrl, onChanged: (_) => setState(() {})),
-                  AppScrollPickerField(
-                    label: _useFeet ? 'HEIGHT (FT/IN)' : 'HEIGHT (CM)',
-                    value: heightDisplay,
-                    onTap: _openHeightPicker,
+            Column(
+              children: [
+                ScreenHeader(title: 'Profile', scrollOffset: _scrollOffset, rightWidget: rightWidget),
+                Expanded(
+                  child: ListView(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.fromLTRB(
+                      AppLayout.screenHorizontalPadding,
+                      0,
+                      AppLayout.screenHorizontalPadding,
+                      130,
+                    ),
+                    children: [
+                      ProfileHero(
+                        nameController: _nameCtrl,
+                        weeklyGoal: _weeklyGoal,
+                        onNameChanged: (_) => setState(() {}),
+                      ),
+                      ProfileMetricsCard(
+                        heightDisplay: heightDisplay,
+                        weightDisplay: weightDisplay,
+                        daysDisplay: daysDisplay,
+                        unit: _unit,
+                        onHeightTap: _openHeightPicker,
+                        onWeightTap: _openWeightPicker,
+                        onDaysTap: _openDaysPerWeekPicker,
+                        onUnitChange: _handleUnitChange,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      BmiCard(weightKg: currentWeightKg, heightCm: _heightCm),
+                    ],
                   ),
-                  Text('UNIT', style: typography.label.copyWith(color: colors.textSecondary)),
-                  const SizedBox(height: AppSpacing.xs),
-                  AppSegmentedControl<WeightUnit>(
-                    options: const [SegmentOption(value: WeightUnit.kg, label: 'kg'), SegmentOption(value: WeightUnit.lb, label: 'lb')],
-                    selectedValue: _unit,
-                    onSelect: _handleUnitChange,
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  AppScrollPickerField(label: 'WEIGHT (${_unit.name.toUpperCase()})', value: weightDisplay, onTap: _openWeightPicker),
-                  AppScrollPickerField(label: 'WORKOUT DAYS PER WEEK', value: daysDisplay, onTap: _openDaysPerWeekPicker),
-                  const SizedBox(height: AppSpacing.md),
-                  BmiCard(weightKg: currentWeightKg, heightCm: _heightCm),
-                  const SizedBox(height: AppSpacing.xxl),
-                ],
-              ),
+                ),
+              ],
             ),
+            ProfileSaveBar(isVisible: hasChanges, onSave: _save),
           ],
         ),
       ),

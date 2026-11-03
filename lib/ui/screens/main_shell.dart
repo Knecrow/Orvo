@@ -171,6 +171,7 @@ class _MainShellState extends State<MainShell> {
                 onSeeAllWorkouts: _openWorkoutHistory,
                 onNavigateToTemplates: () => setState(() => _currentTab = 1),
                 onOpenBodyProgress: () => setState(() => _currentTab = 2),
+                onOpenProfile: () => setState(() => _currentTab = 3),
               ),
               TemplatesScreen(
                 store: store,
