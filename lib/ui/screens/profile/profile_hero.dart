@@ -71,7 +71,7 @@ class ProfileHero extends StatelessWidget {
               Icon(AppIcons.flame, size: 12, color: colors.accent),
               const SizedBox(width: 5),
               Text(
-                '$weeklyGoal DAYS / WEEK',
+                '$weeklyGoal / wk',
                 style: typography.label.copyWith(
                   fontSize: 11,
                   fontWeight: FontWeight.w700,

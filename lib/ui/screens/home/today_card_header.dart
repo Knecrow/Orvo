@@ -39,9 +39,7 @@ class TodayCardHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              isScheduled
-                  ? '$weekdayCode · TODAY\'S ROUTINE'
-                  : '$weekdayCode · OPTIONAL ROUTINE',
+              isScheduled ? '$weekdayCode · TODAY' : weekdayCode,
               style: typography.label.copyWith(
                 color: const Color(0xFF8E8D88),
                 fontSize: 11,
@@ -121,7 +119,7 @@ class TodayCardHeader extends StatelessWidget {
               ],
             ),
             Text(
-              '$doneCount / $totalCount done',
+              '$doneCount / $totalCount',
               style: typography.secondary
                   .merge(typography.tabularNums)
                   .copyWith(

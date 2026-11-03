@@ -83,7 +83,7 @@ class ProfileMetricsCard extends StatelessWidget {
             child: Divider(color: colors.border.withValues(alpha: 0.6), height: 1),
           ),
           ProfileMetricTile(
-            label: 'Workout Days',
+            label: 'Goal',
             value: daysDisplay,
             onTap: onDaysTap,
             showDivider: false,

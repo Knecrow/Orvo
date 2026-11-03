@@ -76,7 +76,7 @@ class StatsDoubleCard extends StatelessWidget {
           context: context,
           icon: AppIcons.flame,
           iconColor: AppTheme.of(context).colors.accent,
-          text: '$streak ${streak == 1 ? 'wk streak' : 'wks streak'}',
+          text: '$streak',
           onTap: onStreakTap,
         ),
         const SizedBox(width: 10),

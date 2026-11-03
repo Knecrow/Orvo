@@ -88,7 +88,7 @@ class OverviewDashboardView extends StatelessWidget {
                     Column(
                       children: [
                         Text(
-                          'Weekly Goal',
+                          'Goal',
                           style: typography.secondary.copyWith(
                             color: const Color(0xFF8E8D88),
                             fontSize: 11,
@@ -96,7 +96,7 @@ class OverviewDashboardView extends StatelessWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '$thisWeekCount of $weeklyGoal done',
+                          '$thisWeekCount / $weeklyGoal',
                           style: typography.body.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -131,7 +131,7 @@ class OverviewDashboardView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Current Streak',
+                              'Streak',
                               style: typography.secondary.copyWith(
                                 color: Colors.white.withValues(alpha: 0.8),
                                 fontSize: 11,
@@ -139,7 +139,7 @@ class OverviewDashboardView extends StatelessWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              '$streak ${streak == 1 ? 'week' : 'weeks'}',
+                              '$streak',
                               style: typography.title.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w800,

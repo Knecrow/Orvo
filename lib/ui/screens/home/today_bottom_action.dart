@@ -35,7 +35,7 @@ class TodayBottomAction extends StatelessWidget {
             Icon(Icons.check_circle_rounded, size: 16, color: colors.accent),
             const SizedBox(width: 8),
             Text(
-              'Workout completed today!',
+              'Completed',
               style: typography.body.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
@@ -60,7 +60,7 @@ class TodayBottomAction extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         child: Text(
-          hasChecked ? 'Finish Workout ($doneCount/$totalCount done)' : 'Log Full Workout',
+          hasChecked ? 'Finish ($doneCount/$totalCount)' : 'Start Workout',
           style: typography.body.copyWith(
             color: Colors.white,
             fontWeight: FontWeight.w700,

@@ -31,7 +31,6 @@ class AppTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
     final colors = theme.colors;
-    final typography = theme.typography;
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
     // Two-element floating nav bar matching reference design:
@@ -83,37 +82,19 @@ class AppTabBar extends StatelessWidget {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         curve: Curves.easeOutCubic,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isSelected ? 12 : 8,
-                          vertical: 8,
-                        ),
+                        width: 42,
+                        height: 42,
+                        alignment: Alignment.center,
                         decoration: isSelected
-                            ? BoxDecoration(
+                            ? const BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(22),
+                                shape: BoxShape.circle,
                               )
                             : null,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              tab.icon,
-                              size: 18,
-                              color: isSelected ? Colors.black : const Color(0xFF888884),
-                            ),
-                            if (isSelected) ...[
-                              const SizedBox(width: 5),
-                              Text(
-                                tab.label,
-                                style: typography.label.copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 12,
-                                  height: 1.1,
-                                ),
-                              ),
-                            ],
-                          ],
+                        child: Icon(
+                          tab.icon,
+                          size: 20,
+                          color: isSelected ? Colors.black : const Color(0xFF888884),
                         ),
                       ),
                     ),

@@ -153,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final hasChanges = _hasChanges();
     final weightDisplay = '${formatWeightValue(_weightVal, _unit)} ${_unit.name}';
     final heightDisplay = formatHeight(_heightCm, useFeet: _useFeet);
-    final daysDisplay = '$_weeklyGoal ${_weeklyGoal == 1 ? 'day' : 'days'} / wk';
+    final daysDisplay = '$_weeklyGoal / wk';
 
     final rightWidget = Row(
       mainAxisSize: MainAxisSize.min,
