@@ -114,7 +114,7 @@ class TodayCardHeader extends StatelessWidget {
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: isLoggedToday ? const Color(0xFF2E7D32) : colors.accent,
+                    color: colors.accent,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -125,9 +125,7 @@ class TodayCardHeader extends StatelessWidget {
               style: typography.secondary
                   .merge(typography.tabularNums)
                   .copyWith(
-                    color: isLoggedToday
-                        ? const Color(0xFF2E7D32)
-                        : const Color(0xFF8E8D88),
+                    color: isLoggedToday ? colors.textPrimary : const Color(0xFF8E8D88),
                     fontWeight: FontWeight.w600,
                     fontSize: 12.5,
                   ),
@@ -141,10 +139,8 @@ class TodayCardHeader extends StatelessWidget {
           child: LinearProgressIndicator(
             value: progress,
             minHeight: 4.5,
-            backgroundColor: const Color(0xFFE2E1DA),
-            valueColor: AlwaysStoppedAnimation<Color>(
-              isLoggedToday ? const Color(0xFF2E7D32) : colors.accent,
-            ),
+            backgroundColor: colors.border,
+            valueColor: AlwaysStoppedAnimation<Color>(colors.accent),
           ),
         ),
       ],

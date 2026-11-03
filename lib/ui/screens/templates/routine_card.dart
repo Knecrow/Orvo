@@ -33,10 +33,10 @@ class RoutineCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-        color: const Color(0xFFF6F5F0),
+        color: colors.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: const Color(0xFFE2E1DA),
+          color: colors.border,
           width: AppLayout.hairlineWidth,
         ),
         boxShadow: const [

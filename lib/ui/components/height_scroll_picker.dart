@@ -135,7 +135,7 @@ class _HeightScrollPickerState extends State<HeightScrollPicker> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF141414),
+                  color: colors.surfaceDark,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -207,7 +207,7 @@ class _HeightScrollPickerState extends State<HeightScrollPicker> {
         behavior: HitTestBehavior.opaque,
         child: Container(
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF141414) : Colors.transparent,
+            color: isSelected ? colors.surfaceDark : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
           ),
           alignment: Alignment.center,

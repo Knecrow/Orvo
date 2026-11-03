@@ -80,7 +80,7 @@ class _AppButtonState extends State<AppButton> with SingleTickerProviderStateMix
     Color textColor = colors.textPrimary;
 
     if (widget.variant == ButtonVariant.primary) {
-      backgroundColor = const Color(0xFF141414);
+      backgroundColor = colors.surfaceDark;
       textColor = Colors.white;
     } else if (widget.variant == ButtonVariant.secondary) {
       borderWidth = 1.0;

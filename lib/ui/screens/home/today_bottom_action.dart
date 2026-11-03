@@ -24,22 +24,21 @@ class TodayBottomAction extends StatelessWidget {
     if (isLoggedToday) {
       return Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 12),
         decoration: BoxDecoration(
-          color: const Color(0x152E7D32),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0x352E7D32)),
+          color: colors.surfaceDark,
+          borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.check_circle_rounded, size: 16, color: Color(0xFF2E7D32)),
-            const SizedBox(width: 6),
+            Icon(Icons.check_circle_rounded, size: 16, color: colors.accent),
+            const SizedBox(width: 8),
             Text(
               'Workout completed today!',
               style: typography.body.copyWith(
-                color: const Color(0xFF2E7D32),
-                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
                 fontSize: 13,
               ),
             ),
@@ -57,7 +56,7 @@ class TodayBottomAction extends StatelessWidget {
         height: 44,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: hasChecked ? colors.accent : const Color(0xFF141414),
+          color: hasChecked ? colors.accent : colors.surfaceDark,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Text(
@@ -72,4 +71,3 @@ class TodayBottomAction extends StatelessWidget {
     );
   }
 }
-

@@ -30,6 +30,7 @@ class AppTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
+    final colors = theme.colors;
     final typography = theme.typography;
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
@@ -51,7 +52,7 @@ class AppTabBar extends StatelessWidget {
               height: 60,
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               decoration: BoxDecoration(
-                color: const Color(0xFF141414),
+                color: colors.surfaceDark,
                 borderRadius: BorderRadius.circular(30),
                 boxShadow: const [
                   BoxShadow(
@@ -135,8 +136,8 @@ class AppTabBar extends StatelessWidget {
               child: Container(
                 width: 60,
                 height: 60,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF141414),
+                decoration: BoxDecoration(
+                  color: colors.surfaceDark,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(

@@ -29,7 +29,7 @@ class StreakGraphCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF141414),
+        color: colors.surfaceDark,
         borderRadius: BorderRadius.circular(24),
         boxShadow: const [
           BoxShadow(

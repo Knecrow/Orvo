@@ -45,7 +45,7 @@ class TodayExerciseRow extends StatelessWidget {
                     color: isDone ? colors.accent : Colors.transparent,
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: isDone ? colors.accent : const Color(0xFFC8C7C0),
+                      color: isDone ? colors.accent : colors.border,
                       width: 1.5,
                     ),
                   ),
@@ -65,14 +65,14 @@ class TodayExerciseRow extends StatelessWidget {
                     exercise.name,
                     style: typography.body.copyWith(
                       color: isDone
-                          ? const Color(0xFF9E9D97)
+                          ? colors.textSecondary
                           : colors.textPrimary,
                       fontWeight: isDone ? FontWeight.w400 : FontWeight.w600,
                       fontSize: 13.5,
                       decoration: isDone
                           ? TextDecoration.lineThrough
                           : TextDecoration.none,
-                      decorationColor: const Color(0xFF9E9D97),
+                      decorationColor: colors.textSecondary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -88,9 +88,7 @@ class TodayExerciseRow extends StatelessWidget {
                     style: typography.secondary
                         .merge(typography.tabularNums)
                         .copyWith(
-                          color: isDone
-                              ? const Color(0xFFA5A49E)
-                              : const Color(0xFF8E8D88),
+                          color: colors.textSecondary,
                           fontSize: 12,
                           fontWeight: FontWeight.w400,
                         ),
@@ -109,7 +107,7 @@ class TodayExerciseRow extends StatelessWidget {
                         .merge(typography.tabularNums)
                         .copyWith(
                           color: isDone
-                              ? const Color(0xFFA5A49E)
+                              ? colors.textSecondary
                               : colors.textPrimary,
                           fontSize: 12,
                           fontWeight: isDone ? FontWeight.w400 : FontWeight.w600,
@@ -123,10 +121,10 @@ class TodayExerciseRow extends StatelessWidget {
           ),
         ),
         if (!isLast)
-          const Divider(
+          Divider(
             height: 1,
             thickness: 0.5,
-            color: Color(0xFFEAE9E2),
+            color: colors.border.withValues(alpha: 0.6),
           ),
       ],
     );

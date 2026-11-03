@@ -117,17 +117,17 @@ class AppColors {
     }
 
     return AppColors(
-      background: const Color(0xFFE6E5E0), // Warm Stone / Oatmeal from screenshot
-      surface: const Color(0xFFFFFFFF),
+      background: const Color(0xFFE6E5E0), // Warm Stone / Oatmeal from screenshot (60%)
+      surface: const Color(0xFFF6F5F0), // Clean Warm Stone Card Surface (30%)
       surfaceMuted: const Color(0xFFC8C7C1), // Neutral grey cards (e.g. Positions, Cash)
-      surfaceDark: const Color(0xFF151515), // Deep black cards & floating nav
-      textPrimary: const Color(0xFF121212),
+      surfaceDark: const Color(0xFF141414), // Deep black cards & floating nav (30%)
+      textPrimary: const Color(0xFF141414),
       textSecondary: const Color(0xFF7E7D78), // Slate stone
-      border: const Color(0xFFD6D5CF),
+      border: const Color(0xFFE2E1DA),
       success: const Color(0xFF34C759),
       warning: const Color(0xFFFF9500),
       danger: const Color(0xFFFF3B30),
-      accent: base,
+      accent: base, // Vibrant coral red / accent pop (10%)
       accentText: darkerAccent,
       buttonLabelOnAccent: const Color(0xFFFFFFFF),
     );

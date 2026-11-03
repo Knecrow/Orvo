@@ -65,13 +65,11 @@ class WeekSplitBar extends StatelessWidget {
                   height: 38,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: hasRoutine ? const Color(0xFF141414) : Colors.white,
+                    color: hasRoutine ? colors.surfaceDark : colors.surface,
                     border: Border.all(
                       color: isSelected
                           ? colors.accent
-                          : (hasRoutine
-                              ? const Color(0xFF141414)
-                              : const Color(0xFFD6D5CF)),
+                          : (hasRoutine ? colors.surfaceDark : colors.border),
                       width: isSelected ? 2.0 : 1.0,
                     ),
                   ),
@@ -81,7 +79,7 @@ class WeekSplitBar extends StatelessWidget {
                       style: typography.body.merge(typography.tabularNums).copyWith(
                             color: hasRoutine
                                 ? Colors.white
-                                : const Color(0xFF8E8D88),
+                                : colors.textSecondary,
                             fontWeight: FontWeight.w700,
                             fontSize: 13,
                           ),
@@ -92,9 +90,7 @@ class WeekSplitBar extends StatelessWidget {
                 Text(
                   day,
                   style: typography.label.copyWith(
-                    color: isSelected
-                        ? colors.accent
-                        : const Color(0xFF8E8D88),
+                    color: isSelected ? colors.accent : colors.textSecondary,
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.5,
@@ -108,4 +104,3 @@ class WeekSplitBar extends StatelessWidget {
     );
   }
 }
-

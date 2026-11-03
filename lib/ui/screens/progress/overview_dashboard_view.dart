@@ -55,7 +55,7 @@ class OverviewDashboardView extends StatelessWidget {
                 height: 170,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF141414),
+                  color: colors.surfaceDark,
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: Column(
@@ -158,7 +158,7 @@ class OverviewDashboardView extends StatelessWidget {
                     height: 79,
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF141414),
+                      color: colors.surfaceDark,
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: Row(

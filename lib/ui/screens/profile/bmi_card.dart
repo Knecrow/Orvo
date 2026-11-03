@@ -62,7 +62,7 @@ class BmiCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0xFF141414),
+              color: colors.surfaceDark,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
