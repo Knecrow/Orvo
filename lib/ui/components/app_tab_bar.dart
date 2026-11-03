@@ -10,12 +10,14 @@ class AppTabBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTabSelected;
   final VoidCallback onQuickAction;
+  final bool showQuickAction;
 
   const AppTabBar({
     super.key,
     required this.currentIndex,
     required this.onTabSelected,
     required this.onQuickAction,
+    this.showQuickAction = false,
   });
 
   bool get _isIos => !kIsWeb && Platform.isIOS;
@@ -69,44 +71,45 @@ class AppTabBar extends StatelessWidget {
                 accentColor: colors.accent,
               ),
 
-              // 3. Quick Action Button (+)
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    AppHaptics.medium();
-                    onQuickAction();
-                  },
-                  behavior: HitTestBehavior.opaque,
-                  child: Semantics(
-                    button: true,
-                    label: 'Start Workout',
-                    child: Center(
-                      child: Container(
-                        width: 42,
-                        height: 42,
-                        decoration: BoxDecoration(
-                          color: colors.accent,
-                          shape: BoxShape.circle,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color(0x33E84132),
-                              blurRadius: 8,
-                              offset: Offset(0, 2),
+              // 3. Quick Action Button (+) - only shown in Routine window
+              if (showQuickAction)
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      AppHaptics.medium();
+                      onQuickAction();
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Semantics(
+                      button: true,
+                      label: 'New Routine',
+                      child: Center(
+                        child: Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: colors.accent,
+                            shape: BoxShape.circle,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Color(0x33E84132),
+                                blurRadius: 8,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.add_rounded,
+                              color: Colors.white,
+                              size: 24,
                             ),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.add_rounded,
-                            color: Colors.white,
-                            size: 24,
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
 
               // 4. Profile Tab
               _buildTabItem(

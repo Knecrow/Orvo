@@ -188,13 +188,10 @@ class _MainShellState extends State<MainShell> {
             bottom: 0,
             child: AppTabBar(
               currentIndex: _currentTab,
+              showQuickAction: _currentTab == 1,
               onTabSelected: (index) => setState(() => _currentTab = index),
               onQuickAction: () {
-                if (_currentTab == 1) {
-                  _openNewTemplate();
-                } else {
-                  _openLogWorkout();
-                }
+                _openNewTemplate();
               },
             ),
           ),
