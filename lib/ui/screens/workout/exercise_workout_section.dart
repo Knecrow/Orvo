@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../../core/logic/last_time_lookup.dart';
+import '../../../core/logic/unit_converter.dart';
 import '../../../core/models/profile.dart';
 import '../../../core/models/workout.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../components/app_bottom_sheet.dart';
+import '../../components/reps_scroll_picker.dart';
 import '../../components/swipeable_row.dart';
+import '../../components/weight_scroll_picker.dart';
 
 class DraftSet {
   final TextEditingController weightCtrl;
@@ -50,6 +54,37 @@ class ExerciseWorkoutSection extends StatelessWidget {
     required this.onAddSet,
     required this.onDataChanged,
   });
+
+  void _openWeightPicker(BuildContext context, DraftSet s) {
+    final curVal = double.tryParse(s.weightCtrl.text) ?? (unit == WeightUnit.kg ? 20.0 : 45.0);
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.42,
+      child: WeightScrollPicker(
+        initialWeight: curVal,
+        unit: unit,
+        onSelect: (val) {
+          s.weightCtrl.text = formatWeightValue(val, unit);
+          onDataChanged();
+        },
+      ),
+    );
+  }
+
+  void _openRepsPicker(BuildContext context, DraftSet s) {
+    final curReps = int.tryParse(s.repsCtrl.text) ?? 10;
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.40,
+      child: RepsScrollPicker(
+        initialReps: curReps,
+        onSelect: (val) {
+          s.repsCtrl.text = '$val';
+          onDataChanged();
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +159,8 @@ class ExerciseWorkoutSection extends StatelessWidget {
                     Expanded(
                       child: TextField(
                         controller: s.weightCtrl,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        readOnly: true,
+                        onTap: () => _openWeightPicker(context, s),
                         textAlign: TextAlign.right,
                         style: typography.body.merge(typography.tabularNums).copyWith(
                           color: colors.textPrimary,
@@ -136,7 +172,6 @@ class ExerciseWorkoutSection extends StatelessWidget {
                           border: UnderlineInputBorder(borderSide: BorderSide(color: colors.border)),
                           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: colors.accent, width: 2)),
                         ),
-                        onChanged: (_) => onDataChanged(),
                       ),
                     ),
                     Padding(
@@ -146,7 +181,8 @@ class ExerciseWorkoutSection extends StatelessWidget {
                     Expanded(
                       child: TextField(
                         controller: s.repsCtrl,
-                        keyboardType: TextInputType.number,
+                        readOnly: true,
+                        onTap: () => _openRepsPicker(context, s),
                         textAlign: TextAlign.right,
                         style: typography.body.merge(typography.tabularNums).copyWith(
                           color: colors.textPrimary,
@@ -158,7 +194,6 @@ class ExerciseWorkoutSection extends StatelessWidget {
                           border: UnderlineInputBorder(borderSide: BorderSide(color: colors.border)),
                           focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: colors.accent, width: 2)),
                         ),
-                        onChanged: (_) => onDataChanged(),
                       ),
                     ),
                   ],
@@ -185,4 +220,3 @@ class ExerciseWorkoutSection extends StatelessWidget {
     );
   }
 }
-
