@@ -33,7 +33,6 @@ class MainShell extends StatefulWidget {
 
 class _MainShellState extends State<MainShell> {
   int _currentTab = 0;
-  int _progressSubTab = 0;
 
   void _openLogWorkout({
     Workout? workoutToEdit,
@@ -146,8 +145,7 @@ class _MainShellState extends State<MainShell> {
                 onOpenWorkoutDetail: _openWorkoutDetail,
                 onSeeAllWorkouts: _openWorkoutHistory,
                 onNavigateToTemplates: () => setState(() => _currentTab = 1),
-                onOpenBodyProgress: () =>
-                    setState(() { _currentTab = 2; _progressSubTab = 2; }),
+                onOpenBodyProgress: () => setState(() => _currentTab = 2),
               ),
               TemplatesScreen(
                 store: store,
@@ -156,7 +154,6 @@ class _MainShellState extends State<MainShell> {
               ProgressScreen(
                 store: store,
                 onStartWorkout: () => _openLogWorkout(),
-                initialSubTab: _progressSubTab,
               ),
               ProfileScreen(
                 store: store,

@@ -87,3 +87,4 @@ Workout convertTemplateToWorkout(
     notes: 'Completed from ${template.name}',
   );
 }
+

@@ -7,18 +7,15 @@ import '../../../core/models/template.dart';
 import '../../../core/models/workout.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
-import '../../components/empty_state.dart';
-import '../../components/swipeable_row.dart';
 import 'hero_chart_card.dart';
 import 'stats_double_card.dart';
 import 'today_workout_card.dart';
-import 'workout_list_item.dart';
 
 class HomeScreen extends StatelessWidget {
   final AppStore store;
   final VoidCallback onStartWorkout;
   final ValueChanged<Template> onStartFromTemplate;
-  final ValueChanged<Workout> onOpenWorkoutDetail;
+  final ValueChanged<Workout>? onOpenWorkoutDetail;
   final VoidCallback onSeeAllWorkouts;
   final VoidCallback onNavigateToTemplates;
   final VoidCallback? onOpenBodyProgress;
@@ -28,7 +25,7 @@ class HomeScreen extends StatelessWidget {
     required this.store,
     required this.onStartWorkout,
     required this.onStartFromTemplate,
-    required this.onOpenWorkoutDetail,
+    this.onOpenWorkoutDetail,
     required this.onSeeAllWorkouts,
     required this.onNavigateToTemplates,
     this.onOpenBodyProgress,
@@ -52,7 +49,6 @@ class HomeScreen extends StatelessWidget {
     final weightStr = formatWeightValue(latestWeightKg, unit);
     final unitLabel = unit == WeightUnit.kg ? 'kg' : 'lb';
 
-    final recent = workouts.take(4).toList();
     final firstName = profile?.name.isNotEmpty == true
         ? profile!.name.split(' ').first
         : 'Athlete';
@@ -69,7 +65,7 @@ class HomeScreen extends StatelessWidget {
             110,
           ),
           children: [
-            // Top row: name + bell
+            // Top row: name + notification bell
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -141,7 +137,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            // Two muted grey stat cards
+            // Two muted grey stat cards (Streak & Weight)
             StatsDoubleCard(
               streak: streak,
               weightStr: weightStr,
@@ -161,52 +157,7 @@ class HomeScreen extends StatelessWidget {
               workouts: workouts,
               onStartWorkout: onStartWorkout,
             ),
-            const SizedBox(height: 32),
-            // Section divider
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'History',
-                  style: typography.body.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: colors.textSecondary,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: onSeeAllWorkouts,
-                  behavior: HitTestBehavior.opaque,
-                  child: Text(
-                    'See all',
-                    style: typography.secondary.copyWith(
-                      color: colors.accent,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            if (workouts.isEmpty)
-              EmptyState(
-                message: 'No workouts logged yet.',
-                actionLabel: 'Log First Workout',
-                onAction: onStartWorkout,
-              )
-            else
-              ...recent.map(
-                (w) => SwipeableRow(
-                  itemKey: ValueKey(w.id),
-                  onDelete: () => store.deleteWorkout(w.id),
-                  child: WorkoutListItem(
-                    workout: w,
-                    onTap: () => onOpenWorkoutDetail(w),
-                  ),
-                ),
-              ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
