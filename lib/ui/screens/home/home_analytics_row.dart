@@ -22,16 +22,13 @@ class HomeAnalyticsRow extends StatelessWidget {
     final colors = theme.colors;
     final typography = theme.typography;
 
-    final goalPercent = weeklyGoal > 0
-        ? ((thisWeekCount / weeklyGoal) * 100).clamp(0, 100).toInt()
-        : 0;
     final progress = weeklyGoal > 0
         ? (thisWeekCount / weeklyGoal).clamp(0.0, 1.0)
         : 0.0;
 
     return Row(
       children: [
-        // 1. Goal Ring Card (compact 56px)
+        // 1. Goal Ring Card (compact 56px, clean ring without percentage)
         Expanded(
           child: Container(
             height: 56,
@@ -61,14 +58,12 @@ class HomeAnalyticsRow extends StatelessWidget {
                         color: colors.accent,
                         strokeWidth: 3.5,
                       ),
-                      Text(
-                        '$goalPercent%',
-                        style: typography.label.merge(typography.tabularNums).copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 9.5,
+                      if (thisWeekCount >= weeklyGoal && weeklyGoal > 0)
+                        Icon(
+                          Icons.check_rounded,
+                          color: colors.accent,
+                          size: 16,
                         ),
-                      ),
                     ],
                   ),
                 ),
