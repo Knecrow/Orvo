@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../core/models/template.dart';
+import '../../../core/platform/app_haptics.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../components/app_bottom_sheet.dart';
+import 'load_scroll_picker.dart';
+import 'target_scroll_picker.dart';
 
 class ExerciseEditorRow extends StatelessWidget {
   final TemplateExercise exercise;
@@ -14,11 +18,38 @@ class ExerciseEditorRow extends StatelessWidget {
     required this.onRemove,
   });
 
+  void _openTargetPicker(BuildContext context) {
+    AppHaptics.light();
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.45,
+      child: TargetScrollPicker(
+        initialTarget: exercise.target.isNotEmpty ? exercise.target : '3 x 10',
+        onSelect: (val) => onChanged(exercise.copyWith(target: val)),
+      ),
+    );
+  }
+
+  void _openLoadPicker(BuildContext context) {
+    AppHaptics.light();
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.45,
+      child: LoadScrollPicker(
+        initialLoad: exercise.load.isNotEmpty ? exercise.load : 'Body',
+        onSelect: (val) => onChanged(exercise.copyWith(load: val)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
     final colors = theme.colors;
     final typography = theme.typography;
+
+    final targetText = exercise.target.isNotEmpty ? exercise.target : '3 x 10';
+    final loadText = exercise.load.isNotEmpty ? exercise.load : 'Body';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -43,7 +74,7 @@ class ExerciseEditorRow extends StatelessWidget {
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 10,
-                  vertical: 8,
+                  vertical: 9,
                 ),
                 filled: true,
                 fillColor: colors.surfaceMuted,
@@ -56,66 +87,57 @@ class ExerciseEditorRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 6),
-          // Target (e.g. 2 x 12, 5 min)
+          // Scrollable Target Button
           Expanded(
             flex: 3,
-            child: TextFormField(
-              initialValue: exercise.target,
-              style: typography.body.copyWith(
-                color: colors.textPrimary,
-                fontSize: 12,
-              ),
-              decoration: InputDecoration(
-                hintText: '2 x 12',
-                hintStyle: typography.secondary.copyWith(
-                  color: colors.textSecondary.withValues(alpha: 0.6),
-                  fontSize: 11,
-                ),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 8,
-                ),
-                filled: true,
-                fillColor: colors.surfaceMuted,
-                border: OutlineInputBorder(
+            child: GestureDetector(
+              onTap: () => _openTargetPicker(context),
+              child: Container(
+                height: 38,
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                decoration: BoxDecoration(
+                  color: colors.surfaceMuted,
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  targetText,
+                  style: typography.body.copyWith(
+                    color: colors.textPrimary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              onChanged: (val) => onChanged(exercise.copyWith(target: val)),
             ),
           ),
           const SizedBox(width: 6),
-          // Load (e.g. 25-30 kg, Body)
+          // Scrollable Load Button
           Expanded(
             flex: 3,
-            child: TextFormField(
-              initialValue: exercise.load,
-              style: typography.body.copyWith(
-                color: colors.textPrimary,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Body / kg',
-                hintStyle: typography.secondary.copyWith(
-                  color: colors.textSecondary.withValues(alpha: 0.6),
-                  fontSize: 11,
-                ),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 8,
-                ),
-                filled: true,
-                fillColor: colors.surfaceMuted,
-                border: OutlineInputBorder(
+            child: GestureDetector(
+              onTap: () => _openLoadPicker(context),
+              child: Container(
+                height: 38,
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                decoration: BoxDecoration(
+                  color: colors.surfaceMuted,
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide.none,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  loadText,
+                  style: typography.body.copyWith(
+                    color: colors.textPrimary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              onChanged: (val) => onChanged(exercise.copyWith(load: val)),
             ),
           ),
           const SizedBox(width: 4),
@@ -135,4 +157,3 @@ class ExerciseEditorRow extends StatelessWidget {
     );
   }
 }
-

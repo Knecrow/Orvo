@@ -142,3 +142,4 @@ class StreakGraphCard extends StatelessWidget {
     );
   }
 }
+
