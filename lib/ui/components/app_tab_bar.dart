@@ -25,16 +25,17 @@ class AppTabBar extends StatelessWidget {
     final theme = AppTheme.of(context);
     final colors = theme.colors;
 
-    // Grounded edge-to-edge bottom dock starting flush from the screen bottom
+    // Grounded edge-to-edge bottom dock with rounded top corners matching the UI cards
     final barContent = Container(
       width: double.infinity,
       decoration: BoxDecoration(
         color: colors.surfaceDark,
-        border: const Border(
-          top: BorderSide(
-            color: Color(0xFF262624),
-            width: 0.8,
-          ),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(24),
+        ),
+        border: Border.all(
+          color: const Color(0xFF262624),
+          width: 0.8,
         ),
         boxShadow: const [
           BoxShadow(
@@ -47,7 +48,7 @@ class AppTabBar extends StatelessWidget {
       child: SafeArea(
         top: false,
         child: SizedBox(
-          height: 58,
+          height: 60,
           child: Row(
             children: [
               // 1. Home Tab
@@ -122,7 +123,10 @@ class AppTabBar extends StatelessWidget {
     );
 
     if (_isIos) {
-      return ClipRect(
+      return ClipRRect(
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(24),
+        ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
           child: barContent,
