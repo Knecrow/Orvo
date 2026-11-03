@@ -10,9 +10,9 @@ import '../../components/app_bottom_sheet.dart';
 import '../../components/app_icons.dart';
 import '../../components/profile_avatar.dart';
 import '../body/log_weight_sheet.dart';
-import '../progress/weight_change_card.dart';
 import 'hero_chart_card.dart';
 import 'home_analytics_row.dart';
+import 'home_weight_graph_card.dart';
 import 'today_workout_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -125,16 +125,9 @@ class HomeScreen extends StatelessWidget {
               workouts: workouts,
               onStartWorkout: onStartWorkout,
             ),
-            const SizedBox(height: 16),
-            // Today's Routine checklist card
-            TodayWorkoutCard(
-              store: store,
-              onStartFromTemplate: onStartFromTemplate,
-              onNavigateToTemplates: onNavigateToTemplates,
-            ),
-            const SizedBox(height: 16),
-            // Full Weight Change Card
-            WeightChangeCard(
+            const SizedBox(height: 10),
+            // Thin Weight Change Graph Card (up with Activity Graph)
+            HomeWeightGraphCard(
               entries: store.bodyEntries,
               unit: profile?.unit ?? WeightUnit.kg,
               onLogWeight: () {
@@ -146,6 +139,13 @@ class HomeScreen extends StatelessWidget {
                   ),
                 );
               },
+            ),
+            const SizedBox(height: 16),
+            // Today's Routine checklist card
+            TodayWorkoutCard(
+              store: store,
+              onStartFromTemplate: onStartFromTemplate,
+              onNavigateToTemplates: onNavigateToTemplates,
             ),
             const SizedBox(height: 20),
           ],
