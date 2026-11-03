@@ -5,31 +5,15 @@ import '../../../core/platform/app_haptics.dart';
 import '../../../core/platform/motion_presets.dart';
 import '../../../core/theme/theme_provider.dart';
 import 'hero_curve_painter.dart';
-import 'hero_stats_header.dart';
-import 'hero_week_consistency.dart';
 
 class HeroChartCard extends StatefulWidget {
   final List<Workout> workouts;
   final VoidCallback onStartWorkout;
-  final int streak;
-  final String weightStr;
-  final String unitLabel;
-  final int thisWeekCount;
-  final int weeklyGoal;
-  final VoidCallback? onStreakTap;
-  final VoidCallback? onWeightTap;
 
   const HeroChartCard({
     super.key,
     required this.workouts,
     required this.onStartWorkout,
-    this.streak = 0,
-    this.weightStr = '',
-    this.unitLabel = '',
-    this.thisWeekCount = 0,
-    this.weeklyGoal = 3,
-    this.onStreakTap,
-    this.onWeightTap,
   });
 
   @override
@@ -39,10 +23,10 @@ class HeroChartCard extends StatefulWidget {
 class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _drawIn;
-  int _selectedFilter = 1;
+  int _selectedFilter = 0;
   int? _hoverIndex;
 
-  static const _filters = ['1D', '1W', '1M', '1Y'];
+  static const _filters = ['1W', '1M', '1Y'];
 
   @override
   void initState() {
@@ -88,35 +72,70 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
     final points = _generatePoints();
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
       decoration: BoxDecoration(
         color: colors.surfaceDark,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x2A000000),
-            blurRadius: 16,
-            offset: Offset(0, 6),
+            color: Color(0x24000000),
+            blurRadius: 14,
+            offset: Offset(0, 5),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. Consolidated Analytics Header (Goal, Streak, Weight, %)
-          HeroStatsHeader(
-            streak: widget.streak,
-            weightStr: widget.weightStr,
-            unitLabel: widget.unitLabel,
-            thisWeekCount: widget.thisWeekCount,
-            weeklyGoal: widget.weeklyGoal,
-            onStreakTap: widget.onStreakTap,
-            onWeightTap: widget.onWeightTap,
+          // Header: Activity Title & Filter Pills
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'ACTIVITY',
+                style: typography.label.copyWith(
+                  color: const Color(0xFF8E8D88),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.1,
+                ),
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(_filters.length, (i) {
+                  final isSel = _selectedFilter == i;
+                  return GestureDetector(
+                    onTap: () {
+                      AppHaptics.light();
+                      setState(() => _selectedFilter = i);
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 150),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      margin: const EdgeInsets.only(left: 4),
+                      decoration: BoxDecoration(
+                        color: isSel ? const Color(0xFF2E2E2E) : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        _filters[i],
+                        style: typography.label.copyWith(
+                          color: isSel ? Colors.white : const Color(0xFF757470),
+                          fontSize: 11,
+                          fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          // 2. Interactive Activity Chart
+          const SizedBox(height: 10),
+          // Interactive Graph Curve
           SizedBox(
-            height: 110,
+            height: 115,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
@@ -130,7 +149,7 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
                     animation: _drawIn,
                     builder: (context, _) {
                       return CustomPaint(
-                        size: Size(constraints.maxWidth, 110),
+                        size: Size(constraints.maxWidth, 115),
                         painter: HeroCurvePainter(
                           points: points,
                           progress: _drawIn.value,
@@ -143,40 +162,6 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
                 );
               },
             ),
-          ),
-          const SizedBox(height: 10),
-          // 3. Weekly Consistency Dots (M T W T F S S)
-          HeroWeekConsistency(workouts: widget.workouts),
-          const SizedBox(height: 10),
-          // 4. Time Range Filter Pills
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(_filters.length, (i) {
-              final isSel = _selectedFilter == i;
-              return GestureDetector(
-                onTap: () {
-                  AppHaptics.light();
-                  setState(() => _selectedFilter = i);
-                },
-                behavior: HitTestBehavior.opaque,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: isSel ? const Color(0xFF2E2E2E) : Colors.transparent,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Text(
-                    _filters[i],
-                    style: typography.label.copyWith(
-                      color: isSel ? Colors.white : const Color(0xFF757470),
-                      fontSize: 11,
-                      fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                    ),
-                  ),
-                ),
-              );
-            }),
           ),
         ],
       ),

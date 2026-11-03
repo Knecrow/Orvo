@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/logic/streak_engine.dart';
-import '../../../core/logic/unit_converter.dart';
-import '../../../core/models/profile.dart';
 import '../../../core/models/template.dart';
 import '../../../core/models/workout.dart';
 import '../../../core/theme/spacing.dart';
@@ -10,6 +8,7 @@ import '../../../core/theme/theme_provider.dart';
 import '../../components/app_icons.dart';
 import '../../components/profile_avatar.dart';
 import 'hero_chart_card.dart';
+import 'home_analytics_row.dart';
 import 'today_workout_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -44,16 +43,9 @@ class HomeScreen extends StatelessWidget {
 
     final workouts = store.workouts;
     final profile = store.profile;
-    final unit = profile?.unit ?? WeightUnit.kg;
     final weeklyGoal = profile?.weeklyGoal ?? 3;
     final thisWeekCount = countWorkoutsThisWeek(workouts);
     final streak = calculateWeeklyStreak(workouts, weeklyGoal);
-
-    final latestWeightKg = store.bodyEntries.isNotEmpty
-        ? store.bodyEntries.first.weightKg
-        : profile?.weightKg ?? 70.0;
-    final weightStr = formatWeightValue(latestWeightKg, unit);
-    final unitLabel = unit == WeightUnit.kg ? 'kg' : 'lb';
 
     final firstName = profile?.name.isNotEmpty == true
         ? profile!.name.split(' ').first
@@ -116,17 +108,18 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            // Hero black chart card with embedded streak & weight stats
+            // Compact Analytics Row (Goal Ring & Red Streak, matching Analytics style)
+            HomeAnalyticsRow(
+              thisWeekCount: thisWeekCount,
+              weeklyGoal: weeklyGoal,
+              streak: streak,
+              onStreakTap: onSeeAllWorkouts,
+            ),
+            const SizedBox(height: 14),
+            // Hero black chart card (Activity Curve)
             HeroChartCard(
               workouts: workouts,
               onStartWorkout: onStartWorkout,
-              streak: streak,
-              weightStr: weightStr,
-              unitLabel: unitLabel,
-              thisWeekCount: thisWeekCount,
-              weeklyGoal: weeklyGoal,
-              onStreakTap: onSeeAllWorkouts,
-              onWeightTap: onOpenBodyProgress,
             ),
             const SizedBox(height: 16),
             // Today's Routine checklist card
