@@ -111,7 +111,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
             // Compact Analytics Row (Goal Ring & Red Streak, matching Analytics style)
             HomeAnalyticsRow(
               thisWeekCount: thisWeekCount,
@@ -119,7 +119,7 @@ class HomeScreen extends StatelessWidget {
               streak: streak,
               onStreakTap: onSeeAllWorkouts,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             // Side-by-side graphs row: Activity & Weight Change
             Row(
               children: [

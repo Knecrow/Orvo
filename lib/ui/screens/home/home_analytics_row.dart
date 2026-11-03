@@ -31,27 +31,27 @@ class HomeAnalyticsRow extends StatelessWidget {
 
     return Row(
       children: [
-        // 1. Goal Ring Card (exact Analytics style, compact 76px)
+        // 1. Goal Ring Card (compact 56px)
         Expanded(
           child: Container(
-            height: 76,
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            height: 56,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: colors.surfaceDark,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: const [
                 BoxShadow(
                   color: Color(0x1F000000),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
+                  blurRadius: 8,
+                  offset: Offset(0, 3),
                 ),
               ],
             ),
             child: Row(
               children: [
                 SizedBox(
-                  width: 44,
-                  height: 44,
+                  width: 36,
+                  height: 36,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -59,20 +59,20 @@ class HomeAnalyticsRow extends StatelessWidget {
                         value: progress,
                         backgroundColor: const Color(0xFF2C2C2A),
                         color: colors.accent,
-                        strokeWidth: 4.5,
+                        strokeWidth: 3.5,
                       ),
                       Text(
                         '$goalPercent%',
                         style: typography.label.merge(typography.tabularNums).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
-                          fontSize: 11,
+                          fontSize: 9.5,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,17 +82,17 @@ class HomeAnalyticsRow extends StatelessWidget {
                         'Goal',
                         style: typography.label.copyWith(
                           color: const Color(0xFF8E8D88),
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 1),
                       Text(
                         '$thisWeekCount / $weeklyGoal',
                         style: typography.body.merge(typography.tabularNums).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: 15,
+                          fontSize: 13.5,
                         ),
                       ),
                     ],
@@ -103,7 +103,7 @@ class HomeAnalyticsRow extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 10),
-        // 2. Red Streak Card (exact Analytics style, compact 76px)
+        // 2. Red Streak Card (compact 56px)
         Expanded(
           child: GestureDetector(
             onTap: () {
@@ -112,16 +112,16 @@ class HomeAnalyticsRow extends StatelessWidget {
             },
             behavior: HitTestBehavior.opaque,
             child: Container(
-              height: 76,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              height: 56,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: colors.accent,
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: const [
                   BoxShadow(
                     color: Color(0x28000000),
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
+                    blurRadius: 8,
+                    offset: Offset(0, 3),
                   ),
                 ],
               ),
@@ -137,17 +137,17 @@ class HomeAnalyticsRow extends StatelessWidget {
                         'Streak',
                         style: typography.label.copyWith(
                           color: Colors.white.withValues(alpha: 0.85),
-                          fontSize: 11,
+                          fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 1),
                       Text(
                         '$streak',
                         style: typography.title.merge(typography.tabularNums).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w800,
-                          fontSize: 22,
+                          fontSize: 18,
                           height: 1.1,
                         ),
                       ),
@@ -156,7 +156,7 @@ class HomeAnalyticsRow extends StatelessWidget {
                   const Icon(
                     Icons.local_fire_department_rounded,
                     color: Colors.white,
-                    size: 28,
+                    size: 24,
                   ),
                 ],
               ),
