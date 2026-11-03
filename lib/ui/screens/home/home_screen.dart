@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../../core/data/app_store.dart';
 import '../../../core/logic/streak_engine.dart';
+import '../../../core/models/profile.dart';
 import '../../../core/models/template.dart';
 import '../../../core/models/workout.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../components/app_bottom_sheet.dart';
 import '../../components/app_icons.dart';
 import '../../components/profile_avatar.dart';
+import '../body/log_weight_sheet.dart';
+import '../progress/weight_change_card.dart';
 import 'hero_chart_card.dart';
 import 'home_analytics_row.dart';
 import 'today_workout_card.dart';
@@ -127,6 +131,21 @@ class HomeScreen extends StatelessWidget {
               store: store,
               onStartFromTemplate: onStartFromTemplate,
               onNavigateToTemplates: onNavigateToTemplates,
+            ),
+            const SizedBox(height: 16),
+            // Full Weight Change Card
+            WeightChangeCard(
+              entries: store.bodyEntries,
+              unit: profile?.unit ?? WeightUnit.kg,
+              onLogWeight: () {
+                showAppBottomSheet(
+                  context: context,
+                  child: LogWeightSheet(
+                    unit: profile?.unit ?? WeightUnit.kg,
+                    onSave: (entry) => store.saveBodyEntry(entry),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
           ],

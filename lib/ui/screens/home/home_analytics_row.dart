@@ -167,3 +167,4 @@ class HomeAnalyticsRow extends StatelessWidget {
     );
   }
 }
+
