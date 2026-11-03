@@ -11,6 +11,7 @@ import '../../components/app_bottom_sheet.dart';
 import '../../components/app_icons.dart';
 import '../../components/app_scroll_picker_field.dart';
 import '../../components/app_text_input.dart';
+import '../../components/days_per_week_scroll_picker.dart';
 import '../../components/height_scroll_picker.dart';
 import '../../components/screen_header.dart';
 import '../../components/segmented_control.dart';
@@ -116,6 +117,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _openDaysPerWeekPicker() {
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.40,
+      child: DaysPerWeekScrollPicker(
+        initialDays: _weeklyGoal,
+        onSelect: (val) => setState(() => _weeklyGoal = val),
+      ),
+    );
+  }
+
   void _handleUnitChange(WeightUnit u) {
     if (u == _unit) return;
     final currentKg = inputToKg(_weightVal, _unit);
@@ -134,6 +146,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final currentWeightKg = inputToKg(_weightVal, _unit);
     final hasChanges = _hasChanges();
     final weightDisplay = '${formatWeightValue(_weightVal, _unit)} ${_unit.name}';
+    final daysDisplay = '$_weeklyGoal ${_weeklyGoal == 1 ? 'day' : 'days'} / week';
 
     final rightWidget = Row(
       mainAxisSize: MainAxisSize.min,
@@ -188,19 +201,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   AppScrollPickerField(label: 'WEIGHT (${_unit.name.toUpperCase()})', value: weightDisplay, onTap: _openWeightPicker),
-                  Text('WORKOUT DAYS PER WEEK', style: typography.label.copyWith(color: colors.textSecondary)),
-                  const SizedBox(height: AppSpacing.xs),
-                  AppSegmentedControl<int>(
-                    options: const [
-                      SegmentOption(value: 3, label: '3 days'),
-                      SegmentOption(value: 4, label: '4 days'),
-                      SegmentOption(value: 5, label: '5 days'),
-                      SegmentOption(value: 6, label: '6 days'),
-                    ],
-                    selectedValue: _weeklyGoal,
-                    onSelect: (g) => setState(() => _weeklyGoal = g),
-                  ),
-                  const SizedBox(height: AppSpacing.xl),
+                  AppScrollPickerField(label: 'WORKOUT DAYS PER WEEK', value: daysDisplay, onTap: _openDaysPerWeekPicker),
+                  const SizedBox(height: AppSpacing.md),
                   BmiCard(weightKg: currentWeightKg, heightCm: _heightCm),
                   const SizedBox(height: AppSpacing.xxl),
                 ],

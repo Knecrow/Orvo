@@ -11,6 +11,7 @@ import '../../components/app_bottom_sheet.dart';
 import '../../components/app_button.dart';
 import '../../components/app_scroll_picker_field.dart';
 import '../../components/app_text_input.dart';
+import '../../components/days_per_week_scroll_picker.dart';
 import '../../components/height_scroll_picker.dart';
 import '../../components/screen_header.dart';
 import '../../components/segmented_control.dart';
@@ -77,6 +78,17 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     );
   }
 
+  void _openDaysPerWeekPicker() {
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.40,
+      child: DaysPerWeekScrollPicker(
+        initialDays: _weeklyGoal,
+        onSelect: (val) => setState(() => _weeklyGoal = val),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
@@ -87,6 +99,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     final weightKg = inputToKg(_weightVal, _unit);
     final isFormValid = name.isNotEmpty && _heightCm > 0 && weightKg > 0;
     final weightDisplay = '${formatWeightValue(_weightVal, _unit)} ${_unit.name}';
+    final daysDisplay = '$_weeklyGoal ${_weeklyGoal == 1 ? 'day' : 'days'} / week';
 
     return Scaffold(
       backgroundColor: colors.background,
@@ -132,17 +145,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       value: weightDisplay,
                       onTap: _openWeightPicker,
                     ),
-                    Text('WORKOUT DAYS PER WEEK', style: typography.label.copyWith(color: colors.textSecondary)),
-                    const SizedBox(height: AppSpacing.xs),
-                    AppSegmentedControl<int>(
-                      options: const [
-                        SegmentOption(value: 3, label: '3 days'),
-                        SegmentOption(value: 4, label: '4 days'),
-                        SegmentOption(value: 5, label: '5 days'),
-                        SegmentOption(value: 6, label: '6 days'),
-                      ],
-                      selectedValue: _weeklyGoal,
-                      onSelect: (val) => setState(() => _weeklyGoal = val),
+                    AppScrollPickerField(
+                      label: 'WORKOUT DAYS PER WEEK',
+                      value: daysDisplay,
+                      onTap: _openDaysPerWeekPicker,
                     ),
                     const SizedBox(height: AppSpacing.xxl),
                   ],
