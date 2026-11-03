@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 /// Clean icon definitions matching the minimalist Orvo design system.
-/// Uses standard Cupertino vector icons without third-party bloat or external dependencies.
+/// Uses standard vector icons without third-party bloat or external dependencies.
 class AppIcons {
   const AppIcons._();
 
@@ -10,7 +11,7 @@ class AppIcons {
   static const IconData trendingUp = CupertinoIcons.graph_square;
   static const IconData activity = CupertinoIcons.waveform_path_ecg;
   static const IconData user = CupertinoIcons.person;
-  static const IconData flame = CupertinoIcons.flame;
+  static const IconData flame = Icons.local_fire_department_rounded;
   static const IconData chevronRight = CupertinoIcons.chevron_right;
   static const IconData chevronDown = CupertinoIcons.chevron_down;
   static const IconData settings = CupertinoIcons.gear;

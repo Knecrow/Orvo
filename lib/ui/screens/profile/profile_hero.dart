@@ -68,7 +68,7 @@ class ProfileHero extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(AppIcons.flame, size: 12, color: colors.accent),
+              Icon(AppIcons.flame, size: 13.5, color: colors.accent),
               const SizedBox(width: 5),
               Text(
                 '$weeklyGoal / wk',

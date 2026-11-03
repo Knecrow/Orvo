@@ -28,6 +28,7 @@ class HeroStatsHeader extends StatelessWidget {
     required String text,
     VoidCallback? onTap,
     required TextStyle style,
+    double iconSize = 13,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -41,7 +42,7 @@ class HeroStatsHeader extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 12, color: color),
+            Icon(icon, size: iconSize, color: color),
             const SizedBox(width: 4),
             Text(text, style: style),
           ],
@@ -85,6 +86,7 @@ class HeroStatsHeader extends StatelessWidget {
               _buildBadge(
                 icon: AppIcons.flame,
                 color: colors.accent,
+                iconSize: 14.5,
                 text: '$streak',
                 onTap: onStreakTap,
                 style: badgeStyle,
@@ -121,3 +123,4 @@ class HeroStatsHeader extends StatelessWidget {
     );
   }
 }
+
