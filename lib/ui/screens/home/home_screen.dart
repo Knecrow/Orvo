@@ -45,7 +45,9 @@ class HomeScreen extends StatelessWidget {
     final workouts = store.workouts;
     final profile = store.profile;
     final unit = profile?.unit ?? WeightUnit.kg;
-    final streak = calculateWeeklyStreak(workouts, profile?.weeklyGoal ?? 3);
+    final weeklyGoal = profile?.weeklyGoal ?? 3;
+    final thisWeekCount = countWorkoutsThisWeek(workouts);
+    final streak = calculateWeeklyStreak(workouts, weeklyGoal);
 
     final latestWeightKg = store.bodyEntries.isNotEmpty
         ? store.bodyEntries.first.weightKg
@@ -121,6 +123,8 @@ class HomeScreen extends StatelessWidget {
               streak: streak,
               weightStr: weightStr,
               unitLabel: unitLabel,
+              thisWeekCount: thisWeekCount,
+              weeklyGoal: weeklyGoal,
               onStreakTap: onSeeAllWorkouts,
               onWeightTap: onOpenBodyProgress,
             ),

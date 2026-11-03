@@ -4,8 +4,9 @@ import '../../../core/models/workout.dart';
 import '../../../core/platform/app_haptics.dart';
 import '../../../core/platform/motion_presets.dart';
 import '../../../core/theme/theme_provider.dart';
-import '../../components/app_icons.dart';
 import 'hero_curve_painter.dart';
+import 'hero_stats_header.dart';
+import 'hero_week_consistency.dart';
 
 class HeroChartCard extends StatefulWidget {
   final List<Workout> workouts;
@@ -13,6 +14,8 @@ class HeroChartCard extends StatefulWidget {
   final int streak;
   final String weightStr;
   final String unitLabel;
+  final int thisWeekCount;
+  final int weeklyGoal;
   final VoidCallback? onStreakTap;
   final VoidCallback? onWeightTap;
 
@@ -23,6 +26,8 @@ class HeroChartCard extends StatefulWidget {
     this.streak = 0,
     this.weightStr = '',
     this.unitLabel = '',
+    this.thisWeekCount = 0,
+    this.weeklyGoal = 3,
     this.onStreakTap,
     this.onWeightTap,
   });
@@ -75,34 +80,6 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
     return points;
   }
 
-  Widget _buildStatBadge({
-    required IconData icon,
-    required Color color,
-    required String text,
-    required TextStyle style,
-    VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: const Color(0xFF262624),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 12, color: color),
-            const SizedBox(width: 4),
-            Text(text, style: style),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = AppTheme.of(context);
@@ -110,14 +87,8 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
     final typography = theme.typography;
     final points = _generatePoints();
 
-    final badgeStyle = typography.label.merge(typography.tabularNums).copyWith(
-      color: Colors.white,
-      fontWeight: FontWeight.w700,
-      fontSize: 11.5,
-    );
-
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
       decoration: BoxDecoration(
         color: colors.surfaceDark,
         borderRadius: BorderRadius.circular(24),
@@ -132,53 +103,20 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Embedded top bar: Streak & Weight on left, Volume point on right
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (widget.streak > 0)
-                    _buildStatBadge(
-                      icon: AppIcons.flame,
-                      color: colors.accent,
-                      text: '${widget.streak}',
-                      onTap: widget.onStreakTap,
-                      style: badgeStyle,
-                    ),
-                  if (widget.streak > 0 && widget.weightStr.isNotEmpty)
-                    const SizedBox(width: 8),
-                  if (widget.weightStr.isNotEmpty)
-                    _buildStatBadge(
-                      icon: AppIcons.activity,
-                      color: const Color(0xFF8E8D88),
-                      text: '${widget.weightStr} ${widget.unitLabel}',
-                      onTap: widget.onWeightTap,
-                      style: badgeStyle,
-                    ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: colors.accent,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '${points.last.toInt()} kg',
-                  style: typography.label.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-            ],
+          // 1. Consolidated Analytics Header (Goal, Streak, Weight, %)
+          HeroStatsHeader(
+            streak: widget.streak,
+            weightStr: widget.weightStr,
+            unitLabel: widget.unitLabel,
+            thisWeekCount: widget.thisWeekCount,
+            weeklyGoal: widget.weeklyGoal,
+            onStreakTap: widget.onStreakTap,
+            onWeightTap: widget.onWeightTap,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
+          // 2. Interactive Activity Chart
           SizedBox(
-            height: 120,
+            height: 110,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
@@ -192,7 +130,7 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
                     animation: _drawIn,
                     builder: (context, _) {
                       return CustomPaint(
-                        size: Size(constraints.maxWidth, 120),
+                        size: Size(constraints.maxWidth, 110),
                         painter: HeroCurvePainter(
                           points: points,
                           progress: _drawIn.value,
@@ -206,7 +144,11 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
               },
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
+          // 3. Weekly Consistency Dots (M T W T F S S)
+          HeroWeekConsistency(workouts: widget.workouts),
+          const SizedBox(height: 10),
+          // 4. Time Range Filter Pills
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List.generate(_filters.length, (i) {
@@ -219,7 +161,7 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
                 behavior: HitTestBehavior.opaque,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                   decoration: BoxDecoration(
                     color: isSel ? const Color(0xFF2E2E2E) : Colors.transparent,
                     borderRadius: BorderRadius.circular(14),
