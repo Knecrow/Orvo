@@ -11,6 +11,7 @@ import '../../components/empty_state.dart';
 import '../../components/swipeable_row.dart';
 import 'hero_chart_card.dart';
 import 'stats_double_card.dart';
+import 'today_workout_card.dart';
 import 'workout_list_item.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -149,6 +150,12 @@ class HomeScreen extends StatelessWidget {
               onWeightTap: onOpenBodyProgress ?? () {},
             ),
             const SizedBox(height: 16),
+            // Today's Routine checklist card
+            TodayWorkoutCard(
+              store: store,
+              onStartFromTemplate: onStartFromTemplate,
+              onNavigateToTemplates: onNavigateToTemplates,
+            ),
             // Hero black chart card
             HeroChartCard(
               workouts: workouts,
