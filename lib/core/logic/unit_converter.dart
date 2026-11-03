@@ -1,6 +1,7 @@
 import '../models/profile.dart';
 
 const double lbToKgFactor = 0.45359237;
+const double cmPerInch = 2.54;
 
 double inputToKg(double value, WeightUnit unit) {
   if (unit == WeightUnit.lb) {
@@ -28,3 +29,22 @@ String formatWeight(double weightKg, WeightUnit unit) {
   return '${formatWeightValue(weightKg, unit)} $unitStr';
 }
 
+(int feet, int inches) cmToFeetInches(double cm) {
+  if (cm <= 0) return (5, 9);
+  final totalInches = (cm / cmPerInch).round();
+  final feet = totalInches ~/ 12;
+  final inches = totalInches % 12;
+  return (feet, inches);
+}
+
+double feetInchesToCm(int feet, int inches) {
+  return ((feet * 12) + inches) * cmPerInch;
+}
+
+String formatHeight(double heightCm, {bool useFeet = false}) {
+  if (useFeet) {
+    final (feet, inches) = cmToFeetInches(heightCm);
+    return '$feet ft $inches in';
+  }
+  return '${heightCm.round()} cm';
+}

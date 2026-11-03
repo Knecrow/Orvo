@@ -34,6 +34,7 @@ class ProfileSetupScreen extends StatefulWidget {
 class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final _nameController = TextEditingController();
   double _heightCm = 175.0;
+  bool _useFeet = false;
   double _weightVal = 70.0;
   WeightUnit _unit = WeightUnit.kg;
   int _weeklyGoal = 3;
@@ -51,6 +52,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       setState(() {
         _unit = newUnit;
         _weightVal = converted;
+        _useFeet = newUnit == WeightUnit.lb;
       });
     }
   }
@@ -58,10 +60,16 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   void _openHeightPicker() {
     showAppBottomSheet(
       context: context,
-      initialChildSize: 0.42,
+      initialChildSize: 0.44,
       child: HeightScrollPicker(
         initialHeightCm: _heightCm,
-        onSelect: (val) => setState(() => _heightCm = val),
+        initialUseFeet: _useFeet,
+        onSelect: (val, useFeet) {
+          setState(() {
+            _heightCm = val;
+            _useFeet = useFeet;
+          });
+        },
       ),
     );
   }
@@ -99,6 +107,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     final weightKg = inputToKg(_weightVal, _unit);
     final isFormValid = name.isNotEmpty && _heightCm > 0 && weightKg > 0;
     final weightDisplay = '${formatWeightValue(_weightVal, _unit)} ${_unit.name}';
+    final heightDisplay = formatHeight(_heightCm, useFeet: _useFeet);
     final daysDisplay = '$_weeklyGoal ${_weeklyGoal == 1 ? 'day' : 'days'} / week';
 
     return Scaffold(
@@ -125,8 +134,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       onChanged: (_) => setState(() {}),
                     ),
                     AppScrollPickerField(
-                      label: 'HEIGHT (CM)',
-                      value: '${_heightCm.round()} cm',
+                      label: _useFeet ? 'HEIGHT (FT/IN)' : 'HEIGHT (CM)',
+                      value: heightDisplay,
                       onTap: _openHeightPicker,
                     ),
                     Text('UNIT', style: typography.label.copyWith(color: colors.textSecondary)),

@@ -38,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   late TextEditingController _nameCtrl;
   late double _heightCm;
+  late bool _useFeet;
   late double _weightVal;
   late WeightUnit _unit;
   late int _weeklyGoal;
@@ -47,6 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     final p = widget.store.profile ?? const Profile(name: '', heightCm: 175, weightKg: 70);
     _unit = p.unit;
+    _useFeet = p.unit == WeightUnit.lb;
     _nameCtrl = TextEditingController(text: p.name);
     _heightCm = p.heightCm > 0 ? p.heightCm : 175.0;
     _weightVal = kgToUnit(p.weightKg, _unit);
@@ -97,10 +99,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _openHeightPicker() {
     showAppBottomSheet(
       context: context,
-      initialChildSize: 0.42,
+      initialChildSize: 0.44,
       child: HeightScrollPicker(
         initialHeightCm: _heightCm,
-        onSelect: (val) => setState(() => _heightCm = val),
+        initialUseFeet: _useFeet,
+        onSelect: (val, useFeet) {
+          setState(() {
+            _heightCm = val;
+            _useFeet = useFeet;
+          });
+        },
       ),
     );
   }
@@ -135,6 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _unit = u;
       _weightVal = converted;
+      _useFeet = u == WeightUnit.lb;
     });
   }
 
@@ -146,6 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final currentWeightKg = inputToKg(_weightVal, _unit);
     final hasChanges = _hasChanges();
     final weightDisplay = '${formatWeightValue(_weightVal, _unit)} ${_unit.name}';
+    final heightDisplay = formatHeight(_heightCm, useFeet: _useFeet);
     final daysDisplay = '$_weeklyGoal ${_weeklyGoal == 1 ? 'day' : 'days'} / week';
 
     final rightWidget = Row(
@@ -157,10 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             behavior: HitTestBehavior.opaque,
             child: Text(
               'Save',
-              style: typography.body.copyWith(
-                color: colors.accentText,
-                fontWeight: FontWeight.w600,
-              ),
+              style: typography.body.copyWith(color: colors.accentText, fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(width: AppSpacing.md),
@@ -191,7 +198,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.fromLTRB(AppLayout.screenHorizontalPadding, 0, AppLayout.screenHorizontalPadding, 100),
                 children: [
                   AppTextInput(label: 'NAME', controller: _nameCtrl, onChanged: (_) => setState(() {})),
-                  AppScrollPickerField(label: 'HEIGHT (CM)', value: '${_heightCm.round()} cm', onTap: _openHeightPicker),
+                  AppScrollPickerField(
+                    label: _useFeet ? 'HEIGHT (FT/IN)' : 'HEIGHT (CM)',
+                    value: heightDisplay,
+                    onTap: _openHeightPicker,
+                  ),
                   Text('UNIT', style: typography.label.copyWith(color: colors.textSecondary)),
                   const SizedBox(height: AppSpacing.xs),
                   AppSegmentedControl<WeightUnit>(
