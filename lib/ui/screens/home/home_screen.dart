@@ -119,26 +119,33 @@ class HomeScreen extends StatelessWidget {
               streak: streak,
               onStreakTap: onSeeAllWorkouts,
             ),
-            const SizedBox(height: 14),
-            // Hero black chart card (Activity Curve)
-            HeroChartCard(
-              workouts: workouts,
-              onStartWorkout: onStartWorkout,
-            ),
-            const SizedBox(height: 10),
-            // Thin Weight Change Graph Card (up with Activity Graph)
-            HomeWeightGraphCard(
-              entries: store.bodyEntries,
-              unit: profile?.unit ?? WeightUnit.kg,
-              onLogWeight: () {
-                showAppBottomSheet(
-                  context: context,
-                  child: LogWeightSheet(
-                    unit: profile?.unit ?? WeightUnit.kg,
-                    onSave: (entry) => store.saveBodyEntry(entry),
+            const SizedBox(height: 12),
+            // Side-by-side graphs row: Activity & Weight Change
+            Row(
+              children: [
+                Expanded(
+                  child: HeroChartCard(
+                    workouts: workouts,
+                    onStartWorkout: onStartWorkout,
                   ),
-                );
-              },
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: HomeWeightGraphCard(
+                    entries: store.bodyEntries,
+                    unit: profile?.unit ?? WeightUnit.kg,
+                    onLogWeight: () {
+                      showAppBottomSheet(
+                        context: context,
+                        child: LogWeightSheet(
+                          unit: profile?.unit ?? WeightUnit.kg,
+                          onSave: (entry) => store.saveBodyEntry(entry),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             // Today's Routine checklist card

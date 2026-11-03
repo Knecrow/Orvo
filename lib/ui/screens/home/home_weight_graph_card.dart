@@ -70,11 +70,11 @@ class _HomeWeightGraphCardState extends State<HomeWeightGraphCard>
     final weightStat = calculateWeightChange(widget.entries);
     final currentWeight = points.isNotEmpty ? points.last : 70.0;
 
-    String deltaLabel = '0.0 $unitLabel';
+    String deltaBadge = '0.0';
     if (weightStat != null) {
       final diffDisplay = kgToUnit(weightStat.diffKg.abs(), widget.unit);
       final sign = weightStat.diffKg > 0 ? '+' : (weightStat.diffKg < 0 ? '-' : '');
-      deltaLabel = '$sign${diffDisplay.toStringAsFixed(1)} $unitLabel';
+      deltaBadge = '$sign${diffDisplay.toStringAsFixed(1)}';
     }
 
     return GestureDetector(
@@ -84,7 +84,8 @@ class _HomeWeightGraphCardState extends State<HomeWeightGraphCard>
       },
       behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+        height: 100,
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
         decoration: BoxDecoration(
           color: colors.surfaceDark,
           borderRadius: BorderRadius.circular(18),
@@ -99,7 +100,7 @@ class _HomeWeightGraphCardState extends State<HomeWeightGraphCard>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Thin header: WEIGHT + current value and delta badge
+            // Compact header: WEIGHT + current value and delta badge
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -107,9 +108,9 @@ class _HomeWeightGraphCardState extends State<HomeWeightGraphCard>
                   'WEIGHT',
                   style: typography.label.copyWith(
                     color: const Color(0xFF8E8D88),
-                    fontSize: 10.5,
+                    fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    letterSpacing: 1.1,
+                    letterSpacing: 0.8,
                   ),
                 ),
                 Row(
@@ -120,22 +121,22 @@ class _HomeWeightGraphCardState extends State<HomeWeightGraphCard>
                       style: typography.label.merge(typography.tabularNums).copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
-                        fontSize: 12,
+                        fontSize: 11,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 5),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                       decoration: BoxDecoration(
                         color: colors.accent,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(5),
                       ),
                       child: Text(
-                        deltaLabel,
+                        deltaBadge,
                         style: typography.label.merge(typography.tabularNums).copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: 10.5,
+                          fontSize: 9.5,
                         ),
                       ),
                     ),
@@ -144,9 +145,9 @@ class _HomeWeightGraphCardState extends State<HomeWeightGraphCard>
               ],
             ),
             const SizedBox(height: 6),
-            // Thin 60px sparkline curve
+            // Sparkline curve
             SizedBox(
-              height: 60,
+              height: 52,
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return GestureDetector(
@@ -160,7 +161,7 @@ class _HomeWeightGraphCardState extends State<HomeWeightGraphCard>
                       animation: _drawIn,
                       builder: (context, _) {
                         return CustomPaint(
-                          size: Size(constraints.maxWidth, 60),
+                          size: Size(constraints.maxWidth, 52),
                           painter: HeroCurvePainter(
                             points: points,
                             progress: _drawIn.value,

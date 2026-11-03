@@ -72,7 +72,8 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
     final points = _generatePoints();
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+      height: 100,
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       decoration: BoxDecoration(
         color: colors.surfaceDark,
         borderRadius: BorderRadius.circular(18),
@@ -95,9 +96,9 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
                 'ACTIVITY',
                 style: typography.label.copyWith(
                   color: const Color(0xFF8E8D88),
-                  fontSize: 10.5,
+                  fontSize: 10,
                   fontWeight: FontWeight.w700,
-                  letterSpacing: 1.1,
+                  letterSpacing: 0.8,
                 ),
               ),
               Row(
@@ -112,17 +113,17 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
                     behavior: HitTestBehavior.opaque,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 150),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      margin: const EdgeInsets.only(left: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                      margin: const EdgeInsets.only(left: 2),
                       decoration: BoxDecoration(
                         color: isSel ? const Color(0xFF2E2E2E) : Colors.transparent,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         _filters[i],
                         style: typography.label.copyWith(
                           color: isSel ? Colors.white : const Color(0xFF757470),
-                          fontSize: 10.5,
+                          fontSize: 9.5,
                           fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
                         ),
                       ),
@@ -133,9 +134,9 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
             ],
           ),
           const SizedBox(height: 6),
-          // Thin 60px interactive graph curve
+          // Interactive graph curve
           SizedBox(
-            height: 60,
+            height: 52,
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return GestureDetector(
@@ -149,7 +150,7 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
                     animation: _drawIn,
                     builder: (context, _) {
                       return CustomPaint(
-                        size: Size(constraints.maxWidth, 60),
+                        size: Size(constraints.maxWidth, 52),
                         painter: HeroCurvePainter(
                           points: points,
                           progress: _drawIn.value,
