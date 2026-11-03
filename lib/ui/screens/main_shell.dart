@@ -10,7 +10,6 @@ import '../components/app_snackbar.dart';
 import '../components/app_tab_bar.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/profile/profile_screen.dart';
-import '../screens/progress/progress_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/templates/new_template_sheet.dart';
 import '../screens/templates/templates_screen.dart';
@@ -170,17 +169,12 @@ class _MainShellState extends State<MainShell> {
                 onOpenWorkoutDetail: _openWorkoutDetail,
                 onSeeAllWorkouts: _openWorkoutHistory,
                 onNavigateToTemplates: () => setState(() => _currentTab = 1),
-                onOpenBodyProgress: () => setState(() => _currentTab = 2),
-                onOpenProfile: () => setState(() => _currentTab = 3),
+                onOpenProfile: () => setState(() => _currentTab = 2),
                 onOpenSettings: _openSettings,
               ),
               TemplatesScreen(
                 store: store,
                 onStartWorkoutFromTemplate: (t) => _openLogWorkout(template: t),
-              ),
-              ProgressScreen(
-                store: store,
-                onStartWorkout: () => _openLogWorkout(),
               ),
               ProfileScreen(
                 store: store,

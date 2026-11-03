@@ -22,7 +22,6 @@ class HomeScreen extends StatelessWidget {
   final ValueChanged<Workout>? onOpenWorkoutDetail;
   final VoidCallback onSeeAllWorkouts;
   final VoidCallback onNavigateToTemplates;
-  final VoidCallback? onOpenBodyProgress;
   final VoidCallback? onOpenProfile;
   final VoidCallback? onOpenSettings;
 
@@ -34,7 +33,6 @@ class HomeScreen extends StatelessWidget {
     this.onOpenWorkoutDetail,
     required this.onSeeAllWorkouts,
     required this.onNavigateToTemplates,
-    this.onOpenBodyProgress,
     this.onOpenProfile,
     this.onOpenSettings,
   });
