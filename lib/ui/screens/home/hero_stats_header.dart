@@ -81,18 +81,16 @@ class HeroStatsHeader extends StatelessWidget {
               style: badgeStyle,
             ),
             const SizedBox(width: 6),
-            // Streak badge
-            if (streak > 0) ...[
-              _buildBadge(
-                icon: AppIcons.flame,
-                color: colors.accent,
-                iconSize: 14.5,
-                text: '$streak',
-                onTap: onStreakTap,
-                style: badgeStyle,
-              ),
-              const SizedBox(width: 6),
-            ],
+            // Streak badge (always visible)
+            _buildBadge(
+              icon: AppIcons.flame,
+              color: colors.accent,
+              iconSize: 15,
+              text: '$streak',
+              onTap: onStreakTap,
+              style: badgeStyle,
+            ),
+            const SizedBox(width: 6),
             // Weight badge
             if (weightStr.isNotEmpty)
               _buildBadge(
