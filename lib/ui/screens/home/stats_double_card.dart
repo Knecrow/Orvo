@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../core/platform/app_haptics.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../components/app_icons.dart';
 
 class StatsDoubleCard extends StatelessWidget {
   final int streak;
@@ -18,10 +19,11 @@ class StatsDoubleCard extends StatelessWidget {
     required this.onWeightTap,
   });
 
-  Widget _buildCard({
+  Widget _buildCompactPill({
     required BuildContext context,
-    required String label,
-    required String value,
+    required IconData icon,
+    required Color iconColor,
+    required String text,
     required VoidCallback onTap,
   }) {
     final theme = AppTheme.of(context);
@@ -29,38 +31,35 @@ class StatsDoubleCard extends StatelessWidget {
     final typography = theme.typography;
 
     return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          AppHaptics.light();
-          onTap();
-        },
-        behavior: HitTestBehavior.opaque,
+      child: _PressablePill(
+        onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
-            color: colors.surfaceMuted,
-            borderRadius: BorderRadius.circular(16),
+            color: colors.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: colors.border, width: 0.8),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                label,
-                style: typography.secondary.copyWith(
-                  color: colors.textSecondary,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.4,
+              Icon(icon, size: 14, color: iconColor),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  text,
+                  style: typography.secondary.merge(typography.tabularNums).copyWith(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: colors.textPrimary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: typography.title.merge(typography.tabularNums).copyWith(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: colors.textPrimary,
-                ),
+              Icon(
+                AppIcons.chevronRight,
+                size: 12,
+                color: colors.textSecondary.withValues(alpha: 0.5),
               ),
             ],
           ),
@@ -73,17 +72,19 @@ class StatsDoubleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _buildCard(
+        _buildCompactPill(
           context: context,
-          label: 'Streak',
-          value: '$streak ${streak == 1 ? 'week' : 'weeks'}',
+          icon: AppIcons.flame,
+          iconColor: AppTheme.of(context).colors.accent,
+          text: '$streak ${streak == 1 ? 'wk streak' : 'wks streak'}',
           onTap: onStreakTap,
         ),
-        const SizedBox(width: 12),
-        _buildCard(
+        const SizedBox(width: 10),
+        _buildCompactPill(
           context: context,
-          label: 'Weight',
-          value: '$weightStr $unitLabel',
+          icon: AppIcons.activity,
+          iconColor: AppTheme.of(context).colors.textSecondary,
+          text: '$weightStr $unitLabel',
           onTap: onWeightTap,
         ),
       ],
@@ -91,3 +92,36 @@ class StatsDoubleCard extends StatelessWidget {
   }
 }
 
+class _PressablePill extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onTap;
+
+  const _PressablePill({required this.child, required this.onTap});
+
+  @override
+  State<_PressablePill> createState() => _PressablePillState();
+}
+
+class _PressablePillState extends State<_PressablePill> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) {
+        setState(() => _pressed = true);
+        AppHaptics.light();
+      },
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTapCancel: () => setState(() => _pressed = false),
+      onTap: widget.onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedScale(
+        scale: _pressed ? 0.96 : 1.0,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeOutCubic,
+        child: widget.child,
+      ),
+    );
+  }
+}

@@ -114,8 +114,14 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            // Two muted grey stat cards (Streak & Weight)
+            const SizedBox(height: 16),
+            // Hero black chart card (moved UP)
+            HeroChartCard(
+              workouts: workouts,
+              onStartWorkout: onStartWorkout,
+            ),
+            const SizedBox(height: 12),
+            // Sleek compact streak & weight pills (no big boxes)
             StatsDoubleCard(
               streak: streak,
               weightStr: weightStr,
@@ -129,11 +135,6 @@ class HomeScreen extends StatelessWidget {
               store: store,
               onStartFromTemplate: onStartFromTemplate,
               onNavigateToTemplates: onNavigateToTemplates,
-            ),
-            // Hero black chart card
-            HeroChartCard(
-              workouts: workouts,
-              onStartWorkout: onStartWorkout,
             ),
             const SizedBox(height: 20),
           ],
