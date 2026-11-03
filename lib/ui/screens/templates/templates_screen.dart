@@ -6,7 +6,6 @@ import '../../../core/models/template.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
 import '../../components/app_bottom_sheet.dart';
-import '../../components/app_button.dart';
 import '../../components/empty_state.dart';
 import '../../components/screen_header.dart';
 import 'new_template_sheet.dart';
@@ -146,68 +145,68 @@ class _TemplatesScreenState extends State<TemplatesScreen> {
       backgroundColor: colors.background,
       body: SafeArea(
         bottom: false,
-        child: Stack(
+        child: Column(
           children: [
-            Column(
-              children: [
-                ScreenHeader(title: 'Routines', scrollOffset: _scrollOffset),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppLayout.screenHorizontalPadding,
-                  ),
-                  child: WeekSplitBar(
-                    templates: allTemplates,
-                    selectedDay: _selectedDay,
-                    onSelectDay: (day) => setState(() => _selectedDay = day),
-                  ),
+            ScreenHeader(
+              title: 'Routines',
+              scrollOffset: _scrollOffset,
+              rightWidget: GestureDetector(
+                onTap: () => _openNewTemplateSheet(),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: AppLayout.minTouchTarget,
+                  height: AppLayout.minTouchTarget,
+                  alignment: Alignment.centerRight,
+                  child: Icon(Icons.add_rounded, size: 26, color: colors.textPrimary),
                 ),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: templates.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppLayout.screenHorizontalPadding,
-                          ),
-                          child: EmptyState(
-                            message: _selectedDay != null
-                                ? 'No routine on $_selectedDay.'
-                                : 'No routines yet.',
-                            actionLabel: 'New Routine',
-                            onAction: () => _openNewTemplateSheet(),
-                          ),
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.fromLTRB(
-                            AppLayout.screenHorizontalPadding,
-                            4,
-                            AppLayout.screenHorizontalPadding,
-                            140,
-                          ),
-                          itemCount: templates.length,
-                          itemBuilder: (context, index) {
-                            final item = templates[index];
-                            return RoutineCard(
-                              template: item,
-                              onStart: () =>
-                                  widget.onStartWorkoutFromTemplate(item),
-                              onEdit: () => _showRoutineOptions(item),
-                              onDelete: () =>
-                                  widget.store.deleteTemplate(item.id),
-                            );
-                          },
-                        ),
-                ),
-              ],
-            ),
-            Positioned(
-              left: AppLayout.screenHorizontalPadding,
-              right: AppLayout.screenHorizontalPadding,
-              bottom: MediaQuery.of(context).padding.bottom + 85,
-              child: AppButton(
-                label: 'New Routine',
-                onPress: () => _openNewTemplateSheet(),
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppLayout.screenHorizontalPadding,
+              ),
+              child: WeekSplitBar(
+                templates: allTemplates,
+                selectedDay: _selectedDay,
+                onSelectDay: (day) => setState(() => _selectedDay = day),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Expanded(
+              child: templates.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppLayout.screenHorizontalPadding,
+                      ),
+                      child: EmptyState(
+                        message: _selectedDay != null
+                            ? 'No routine on $_selectedDay.'
+                            : 'No routines yet.',
+                        actionLabel: 'Add Routine',
+                        onAction: () => _openNewTemplateSheet(),
+                      ),
+                    )
+                  : ListView.builder(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.fromLTRB(
+                        AppLayout.screenHorizontalPadding,
+                        4,
+                        AppLayout.screenHorizontalPadding,
+                        110,
+                      ),
+                      itemCount: templates.length,
+                      itemBuilder: (context, index) {
+                        final item = templates[index];
+                        return RoutineCard(
+                          template: item,
+                          onStart: () =>
+                              widget.onStartWorkoutFromTemplate(item),
+                          onEdit: () => _showRoutineOptions(item),
+                          onDelete: () =>
+                              widget.store.deleteTemplate(item.id),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

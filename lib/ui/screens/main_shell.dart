@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../core/data/app_store.dart';
+import '../../core/logic/autocomplete_engine.dart';
 import '../../core/models/profile.dart';
 import '../../core/models/template.dart';
 import '../../core/models/workout.dart';
 import '../../core/theme/theme_provider.dart';
+import '../components/app_bottom_sheet.dart';
 import '../components/app_snackbar.dart';
 import '../components/app_tab_bar.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/progress/progress_screen.dart';
 import '../screens/settings/settings_screen.dart';
+import '../screens/templates/new_template_sheet.dart';
 import '../screens/templates/templates_screen.dart';
 import '../screens/workout/log_workout_screen.dart';
 import '../screens/workout/workout_detail_screen.dart';
@@ -60,6 +63,28 @@ class _MainShellState extends State<MainShell> {
           const end = Offset.zero;
           final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: Curves.easeOutCubic));
           return SlideTransition(position: anim.drive(tween), child: child);
+        },
+      ),
+    );
+  }
+
+  void _openNewTemplate([Template? template]) {
+    final allNames = extractExerciseNames(
+      widget.store.workouts,
+      widget.store.templates,
+    );
+    showAppBottomSheet(
+      context: context,
+      initialChildSize: 0.88,
+      child: NewTemplateSheet(
+        allExerciseNames: allNames,
+        initialTemplate: template,
+        onSave: (t) {
+          if (template != null) {
+            widget.store.updateTemplate(t);
+          } else {
+            widget.store.addTemplate(t);
+          }
         },
       ),
     );
@@ -168,7 +193,13 @@ class _MainShellState extends State<MainShell> {
             child: AppTabBar(
               currentIndex: _currentTab,
               onTabSelected: (index) => setState(() => _currentTab = index),
-              onQuickAction: () => _openLogWorkout(),
+              onQuickAction: () {
+                if (_currentTab == 1) {
+                  _openNewTemplate();
+                } else {
+                  _openLogWorkout();
+                }
+              },
             ),
           ),
           if (store.snackbar != null)
