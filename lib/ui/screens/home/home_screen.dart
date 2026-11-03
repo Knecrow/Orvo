@@ -10,7 +10,6 @@ import '../../../core/theme/theme_provider.dart';
 import '../../components/app_icons.dart';
 import '../../components/profile_avatar.dart';
 import 'hero_chart_card.dart';
-import 'stats_double_card.dart';
 import 'today_workout_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -115,19 +114,15 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            // Hero black chart card (moved UP)
+            // Hero black chart card with embedded streak & weight stats
             HeroChartCard(
               workouts: workouts,
               onStartWorkout: onStartWorkout,
-            ),
-            const SizedBox(height: 12),
-            // Sleek compact streak & weight pills (no big boxes)
-            StatsDoubleCard(
               streak: streak,
               weightStr: weightStr,
               unitLabel: unitLabel,
               onStreakTap: onSeeAllWorkouts,
-              onWeightTap: onOpenBodyProgress ?? () {},
+              onWeightTap: onOpenBodyProgress,
             ),
             const SizedBox(height: 16),
             // Today's Routine checklist card

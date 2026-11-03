@@ -4,16 +4,27 @@ import '../../../core/models/workout.dart';
 import '../../../core/platform/app_haptics.dart';
 import '../../../core/platform/motion_presets.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../components/app_icons.dart';
 import 'hero_curve_painter.dart';
 
 class HeroChartCard extends StatefulWidget {
   final List<Workout> workouts;
   final VoidCallback onStartWorkout;
+  final int streak;
+  final String weightStr;
+  final String unitLabel;
+  final VoidCallback? onStreakTap;
+  final VoidCallback? onWeightTap;
 
   const HeroChartCard({
     super.key,
     required this.workouts,
     required this.onStartWorkout,
+    this.streak = 0,
+    this.weightStr = '',
+    this.unitLabel = '',
+    this.onStreakTap,
+    this.onWeightTap,
   });
 
   @override
@@ -55,19 +66,41 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
       }).toList();
 
       if (dayWorkouts.isNotEmpty) {
-        var totalSets = 0;
-        for (final w in dayWorkouts) {
-          for (final e in w.exercises) {
-            totalSets += e.sets.length;
-          }
-        }
+        final totalSets = dayWorkouts.fold<int>(0, (sum, w) => sum + w.exercises.fold<int>(0, (s, e) => s + e.sets.length));
         points.add(max(10.0, totalSets * 8.0));
       } else {
-        final wave = 18.0 + 12.0 * sin(i * 0.7);
-        points.add(wave);
+        points.add(18.0 + 12.0 * sin(i * 0.7));
       }
     }
     return points;
+  }
+
+  Widget _buildStatBadge({
+    required IconData icon,
+    required Color color,
+    required String text,
+    required TextStyle style,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: const Color(0xFF262624),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 12, color: color),
+            const SizedBox(width: 4),
+            Text(text, style: style),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -76,6 +109,12 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
     final colors = theme.colors;
     final typography = theme.typography;
     final points = _generatePoints();
+
+    final badgeStyle = typography.label.merge(typography.tabularNums).copyWith(
+      color: Colors.white,
+      fontWeight: FontWeight.w700,
+      fontSize: 11.5,
+    );
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
@@ -93,23 +132,49 @@ class _HeroChartCardState extends State<HeroChartCard> with SingleTickerProvider
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: colors.accent,
-                borderRadius: BorderRadius.circular(8),
+          // Embedded top bar: Streak & Weight on left, Volume point on right
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.streak > 0)
+                    _buildStatBadge(
+                      icon: AppIcons.flame,
+                      color: colors.accent,
+                      text: '${widget.streak}',
+                      onTap: widget.onStreakTap,
+                      style: badgeStyle,
+                    ),
+                  if (widget.streak > 0 && widget.weightStr.isNotEmpty)
+                    const SizedBox(width: 8),
+                  if (widget.weightStr.isNotEmpty)
+                    _buildStatBadge(
+                      icon: AppIcons.activity,
+                      color: const Color(0xFF8E8D88),
+                      text: '${widget.weightStr} ${widget.unitLabel}',
+                      onTap: widget.onWeightTap,
+                      style: badgeStyle,
+                    ),
+                ],
               ),
-              child: Text(
-                '${points.last.toInt()} kg',
-                style: typography.label.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 11,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: colors.accent,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${points.last.toInt()} kg',
+                  style: typography.label.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 11,
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
           const SizedBox(height: 6),
           SizedBox(
