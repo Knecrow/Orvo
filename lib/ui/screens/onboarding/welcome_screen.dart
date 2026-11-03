@@ -71,13 +71,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                         scale: _scaleAnimation,
                         child: FadeTransition(
                           opacity: _fadeAnimation,
-                          child: Text(
-                            'O',
-                            style: typography.largeTitle.copyWith(
-                              fontSize: 64,
-                              fontWeight: FontWeight.w600,
-                              color: colors.accent,
-                              height: 1.0,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(22),
+                            child: Image.asset(
+                              'assets/icon.png',
+                              width: 84,
+                              height: 84,
                             ),
                           ),
                         ),

@@ -122,3 +122,4 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
     );
   }
 }
+

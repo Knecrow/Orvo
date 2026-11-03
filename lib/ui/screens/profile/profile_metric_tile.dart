@@ -90,3 +90,4 @@ class _ProfileMetricTileState extends State<ProfileMetricTile> {
     );
   }
 }
+
