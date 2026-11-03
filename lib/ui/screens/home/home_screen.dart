@@ -7,6 +7,7 @@ import '../../../core/models/template.dart';
 import '../../../core/models/workout.dart';
 import '../../../core/theme/spacing.dart';
 import '../../../core/theme/theme_provider.dart';
+import '../../components/app_icons.dart';
 import '../../components/profile_avatar.dart';
 import 'hero_chart_card.dart';
 import 'stats_double_card.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatelessWidget {
   final VoidCallback onNavigateToTemplates;
   final VoidCallback? onOpenBodyProgress;
   final VoidCallback? onOpenProfile;
+  final VoidCallback? onOpenSettings;
 
   const HomeScreen({
     super.key,
@@ -32,6 +34,7 @@ class HomeScreen extends StatelessWidget {
     required this.onNavigateToTemplates,
     this.onOpenBodyProgress,
     this.onOpenProfile,
+    this.onOpenSettings,
   });
 
   @override
@@ -43,7 +46,6 @@ class HomeScreen extends StatelessWidget {
     final workouts = store.workouts;
     final profile = store.profile;
     final unit = profile?.unit ?? WeightUnit.kg;
-    final thisWeekCount = countWorkoutsThisWeek(workouts);
     final streak = calculateWeeklyStreak(workouts, profile?.weeklyGoal ?? 3);
 
     final latestWeightKg = store.bodyEntries.isNotEmpty
@@ -68,7 +70,7 @@ class HomeScreen extends StatelessWidget {
             110,
           ),
           children: [
-            // Top row: profile avatar + greeting (tap to open profile) & notification bell
+            // Top row: profile avatar + name (tap to open profile) & settings button
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -85,85 +87,28 @@ class HomeScreen extends StatelessWidget {
                         onTap: onOpenProfile,
                       ),
                       const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Hey,',
-                            style: typography.label.copyWith(
-                              color: colors.textSecondary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Text(
-                            firstName,
-                            style: typography.title.copyWith(
-                              color: colors.textPrimary,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18,
-                              height: 1.1,
-                            ),
-                          ),
-                        ],
+                      Text(
+                        firstName,
+                        style: typography.title.copyWith(
+                          color: colors.textPrimary,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Stack(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.notifications_none_rounded,
-                        size: 24,
-                        color: colors.textPrimary,
-                      ),
-                    ),
-                    Positioned(
-                      right: 6,
-                      top: 6,
-                      child: Container(
-                        width: 7,
-                        height: 7,
-                        decoration: BoxDecoration(
-                          color: colors.accent,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            // Hero stat: large workout count
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Text(
-                  '$thisWeekCount',
-                  style: typography.largeTitle
-                      .merge(typography.tabularNums)
-                      .copyWith(
-                        fontSize: 48,
-                        fontWeight: FontWeight.w800,
-                        color: colors.textPrimary,
-                        height: 1.0,
-                      ),
-                ),
-                const SizedBox(width: 10),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    thisWeekCount == 1 ? 'workout' : 'workouts',
-                    style: typography.secondary.copyWith(
+                GestureDetector(
+                  onTap: onOpenSettings,
+                  behavior: HitTestBehavior.opaque,
+                  child: Container(
+                    width: AppLayout.minTouchTarget,
+                    height: AppLayout.minTouchTarget,
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      AppIcons.settings,
+                      size: 22,
                       color: colors.textSecondary,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
